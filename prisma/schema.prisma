@@ -1,0 +1,135 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// generator zod {
+//   provider = "zod-prisma"
+//   output   = "./zod" // (default) the directory where generated zod schemas will be saved
+//
+//   relationModel = true // (default) Create and export both plain and related models.
+//   // relationModel         = "default" // Do not export model without relations.
+//   // relationModel         = false // Do not generate related model
+//
+//   modelCase = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
+//   // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
+//
+//   modelSuffix = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
+//
+//   // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
+//   useDecimalJs = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
+//
+//   // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
+//   prismaJsonNullability = true // (default) uses prisma's scheme for JSON field nullability
+//   // prismaJsonNullability = false // allows null assignment to optional JSON fields
+// }
+
+model session {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       user     @relation(fields: [user_id], references: [id])
+  user_id    String   @unique @db.Uuid
+  token      String
+}
+
+model user {
+  id         String    @id @default(uuid()) @db.Uuid
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  password   String    @db.VarChar(255)
+  email      String    @unique @db.VarChar(255)
+  sessions   session[]
+  firstname  String    @db.VarChar(255)
+  surname    String    @db.VarChar(255)
+  birthday   DateTime
+
+  pantry    pantry @relation(fields: [pantry_id], references: [id])
+  pantry_id String @unique @db.Uuid
+}
+
+model pantry {
+  id         String   @id @default(uuid()) @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  name       String   @db.VarChar(255)
+
+  users        user[]
+  pantry_items pantry_item[]
+
+  shoplist        shoplist[]
+  shoplist_item   shoplist_item? @relation(fields: [shoplist_itemId], references: [id])
+  shoplist_itemId String?        @db.Uuid
+}
+
+model pantry_item {
+  id           String      @id @default(uuid()) @db.Uuid
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  portion      Float
+  portion_type PortionType
+
+  pantry    pantry @relation(fields: [pantry_id], references: [id])
+  pantry_id String @unique @db.Uuid
+
+  product    product @relation(fields: [product_id], references: [id])
+  product_id String  @unique @db.Uuid
+}
+
+model product {
+  id           String        @id @default(uuid()) @db.Uuid
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  name         String
+  pantry_items pantry_item[]
+
+  category      category       @relation(fields: [category_id], references: [id])
+  category_id   String         @unique @db.Uuid
+  shoplist_item shoplist_item?
+}
+
+model category {
+  id         String   @id @default(uuid()) @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  name       String
+
+  products product[]
+}
+
+model shoplist {
+  id         String   @id @default(uuid()) @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  name       String   @db.VarChar(255)
+
+  pantry    pantry @relation(fields: [pantry_id], references: [id])
+  pantry_id String @unique @db.Uuid
+
+  shoplist_items shoplist_item[]
+}
+
+model shoplist_item {
+  id           String      @id @default(uuid()) @db.Uuid
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  portion      Float
+  portion_type PortionType
+
+  shoplist    shoplist @relation(fields: [shoplist_id], references: [id])
+  shoplist_id String   @unique @db.Uuid
+
+  product    product @relation(fields: [product_id], references: [id])
+  product_id String  @unique @db.Uuid
+
+  pantry pantry[]
+}
+
+enum PortionType {
+  GRAMS
+  UNITS
+  LITERS
+}

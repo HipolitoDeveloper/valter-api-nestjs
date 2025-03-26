@@ -1,0 +1,15 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "sqlDialect": "postgresql"
+      }
+    }
+  ],
+  "semi": true,
+  "tabWidth": 2,
+  "printWidth": 80
+}
