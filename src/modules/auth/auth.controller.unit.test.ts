@@ -116,44 +116,4 @@ describe('AuthController', () => {
       requestMock.currentUser.id,
     );
   });
-
-  describe('finishRegister', () => {
-    let finishRegisterMock;
-
-    beforeEach(() => {
-      finishRegisterMock = mocks.USER_MOCK.SERVICE.update;
-    });
-
-    it('should finishRegister and return the user data', async () => {
-      mockAuthService.finishRegister.mockResolvedValue(finishRegisterMock);
-
-      const result = await authController.finishRegister({
-        email: 'email@email.com',
-        password: 'password',
-      });
-
-      expect(result).toEqual(finishRegisterMock);
-      expect(mockAuthService.finishRegister).toHaveBeenCalledWith(
-        'email@email.com',
-        'password',
-      );
-    });
-
-    it('should handle registration failure', async () => {
-      const errorMessage = 'User registration failed';
-      mockAuthService.finishRegister.mockRejectedValue(new Error(errorMessage));
-
-      await expect(
-        authController.finishRegister({
-          email: 'email@email.com',
-          password: 'password',
-        }),
-      ).rejects.toThrowError(errorMessage);
-
-      expect(mockAuthService.finishRegister).toHaveBeenCalledWith(
-        'email@email.com',
-        'password',
-      );
-    });
-  });
 });

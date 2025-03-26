@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
-const createUser = async (prisma: PrismaClient) => {
-  const id = uuidv4() as string;
+export const createUser = async (prisma: PrismaClient) => {
+  const generateUuid = uuidv4 as () => string;
 
   await prisma.user.upsert({
     where: {
-      id,
+      id: generateUuid(),
     },
     update: {},
     create: {

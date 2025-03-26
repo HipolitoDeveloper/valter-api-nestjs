@@ -10,17 +10,13 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { JwtRefreshGuard } from '../../common/guards/auth-jwt-refresh.guard';
 import { JwtAuthGuard } from '../../common/guards/auth-jwt.guard';
-import { RefreshTokenGuard } from '../../common/guards/auth-refreshtoken.guard';
 import { ACTIONS, RESOURCES } from '../../common/permission/permission.enum';
 import { ZodValidationPipe } from '../../common/pipe/zod-validation.pipe';
 import { UserControllerNamespace } from '../user/user.type';
 import { AuthService } from './auth.service';
-import {
-  authValidator,
-  FinishRegisterBody,
-  SigninBody,
-} from './auth.validator';
+import { authValidator, SigninBody } from './auth.validator';
 import { userValidator } from '../user/user.validator';
 import { Public } from 'src/common/decorators/public-route.decorator';
 import { Request } from '../../common/types/http.type';
@@ -47,19 +43,13 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
   async logout(@Req() request: Request) {
     return this.authService.logout(request.currentUser.id);
   }
 
-  @Public()
-  @Post('finish-register')
-  @UsePipes(new ZodValidationPipe(authValidator.finishRegister))
-  async finishRegister(@Body() body: FinishRegisterBody) {
-    return this.authService.finishRegister(body.email, body.password);
-  }
-
-  @UseGuards(RefreshTokenGuard)
   @Get('refresh')
+  @UseGuards(JwtRefreshGuard)
   refreshTokens(@Req() req: Request) {
     return this.authService.refreshTokens(
       req.currentUser.id,

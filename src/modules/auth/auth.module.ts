@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { BasicStrategy } from '../../common/guards/strategies/basic.strategy';
 import { JwtStrategy } from '../../common/guards/strategies/jwt.strategy';
-import { RefreshTokenStrategy } from '../../common/guards/strategies/refreshtoken.strategy';
+import { JwtRefreshStrategy } from '../../common/guards/strategies/jwt-refresh.strategy';
 import { ExceptionHandler } from '../../common/handler/exception.handler';
 import { UserModule } from '../user/user.module';
 import { UserRepository } from '../user/user.repository';
 import { UserService } from '../user/user.service';
 import { AuthController } from './auth.controller';
+import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -21,9 +22,10 @@ import { ConfigService } from '@nestjs/config';
     UserService,
     BasicStrategy,
     JwtStrategy,
-    RefreshTokenStrategy,
+    JwtRefreshStrategy,
     UserRepository,
     ConfigService,
+    AuthRepository,
   ],
   imports: [
     PassportModule,

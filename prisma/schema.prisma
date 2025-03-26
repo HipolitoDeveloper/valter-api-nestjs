@@ -29,11 +29,11 @@ generator client {
 // }
 
 model session {
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user       user     @relation(fields: [user_id], references: [id])
-  user_id    String   @unique @db.Uuid
-  token      String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user          user     @relation(fields: [user_id], references: [id])
+  user_id       String   @unique @db.Uuid
+  refresh_token String?
 }
 
 model user {
@@ -60,9 +60,7 @@ model pantry {
   users        user[]
   pantry_items pantry_item[]
 
-  shoplist        shoplist[]
-  shoplist_item   shoplist_item? @relation(fields: [shoplist_itemId], references: [id])
-  shoplist_itemId String?        @db.Uuid
+  shoplist shoplist[]
 }
 
 model pantry_item {
@@ -124,8 +122,6 @@ model shoplist_item {
 
   product    product @relation(fields: [product_id], references: [id])
   product_id String  @unique @db.Uuid
-
-  pantry pantry[]
 }
 
 enum PortionType {

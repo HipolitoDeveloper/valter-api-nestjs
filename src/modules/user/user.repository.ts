@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 import prisma from '../../../prisma/prisma';
+import { UserRepositoryNamespace } from './user.type';
+import User = UserRepositoryNamespace.User;
 
 @Injectable()
 export class UserRepository {
@@ -12,6 +14,12 @@ export class UserRepository {
         firstname: true,
         email: true,
         surname: true,
+        pantry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
@@ -47,10 +55,53 @@ export class UserRepository {
         email: true,
         firstname: true,
         surname: true,
+        pantry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
       where: {
         id: userId,
       },
     });
+  }
+
+  async findByEmail(email: string) {
+    const userResult = await prisma.user.findUnique({
+      select: {
+        id: true,
+        email: true,
+        firstname: true,
+        surname: true,
+        password: true,
+        pantry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      where: {
+        email: email,
+      },
+    });
+
+    if (userResult) {
+      return {
+        id: userResult?.id,
+        email: userResult?.email,
+        firstname: userResult?.firstname,
+        surname: userResult?.surname,
+        password: userResult?.password || undefined,
+        pantry: {
+          id: userResult?.pantry?.id,
+          name: userResult?.pantry?.name,
+        },
+      } as User;
+    } else {
+      return undefined;
+    }
   }
 }

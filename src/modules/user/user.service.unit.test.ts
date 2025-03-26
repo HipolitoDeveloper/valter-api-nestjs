@@ -41,12 +41,10 @@ describe('UserService', () => {
   describe('create', () => {
     let userMock: UserControllerNamespace.CreateUserBody;
     let userCreateMock: UserRepositoryNamespace.User;
-    let currentUserMock;
 
     beforeEach(() => {
       userMock = mocks.USER_MOCK.SERVICE.userMock;
       userCreateMock = mocks.USER_MOCK.REPOSITORY.create;
-      currentUserMock = mocks.USER_MOCK.currentUser;
 
       (hash as jest.Mock).mockResolvedValue(userMock.password);
     });
@@ -54,7 +52,7 @@ describe('UserService', () => {
     it('should create a user successfully', async () => {
       jest.spyOn(userRepository, 'create').mockResolvedValue(userCreateMock);
 
-      const result = await userService.create(userMock, currentUserMock);
+      const result = await userService.create(userMock);
 
       expect(userRepository.create).toHaveBeenCalledWith({
         email: userMock.email,
@@ -64,8 +62,8 @@ describe('UserService', () => {
         surname: userMock.surname,
         birthday: userMock.birthday,
         pantry: {
-          connect: {
-            id: '',
+          create: {
+            name: userMock.pantryName,
           },
         },
       } as typeof userMock);
@@ -73,15 +71,20 @@ describe('UserService', () => {
         id: userCreateMock.id,
         firstName: userCreateMock.firstname,
         email: userCreateMock.email,
+        surname: userCreateMock.surname,
+        pantry: {
+          id: userCreateMock.pantry.id,
+          name: userCreateMock.pantry.name,
+        },
       });
     });
 
     it('should throw `CREATE_ENTITY_ERROR` if creation fails', async () => {
       jest.spyOn(userRepository, 'create').mockRejectedValue(new Error());
 
-      await expect(
-        userService.create(userMock, currentUserMock),
-      ).rejects.toThrowError(new ErrorException(ERRORS.CREATE_ENTITY_ERROR));
+      await expect(userService.create(userMock)).rejects.toThrowError(
+        new ErrorException(ERRORS.CREATE_ENTITY_ERROR),
+      );
     });
   });
 
@@ -154,6 +157,38 @@ describe('UserService', () => {
       jest.spyOn(userRepository, 'findById').mockRejectedValue(new Error());
 
       await expect(userService.findOneById('1')).rejects.toThrowError(
+        new ErrorException(ERRORS.DATABASE_ERROR),
+      );
+    });
+  });
+
+  describe('findOneByEmail', () => {
+    let userFindByEmailMock: UserRepositoryNamespace.User;
+
+    beforeAll(() => {
+      userFindByEmailMock = mocks.USER_MOCK.REPOSITORY.findByEmail;
+    });
+
+    it('should return a user by ID', async () => {
+      jest
+        .spyOn(userRepository, 'findByEmail')
+        .mockResolvedValue(userFindByEmailMock);
+
+      const result = await userService.findOneByEmail('1');
+
+      expect(userRepository.findByEmail).toHaveBeenCalledWith('1');
+      expect(result).toEqual({
+        id: userFindByEmailMock.id,
+        firstName: userFindByEmailMock.firstname,
+        surname: userFindByEmailMock.surname,
+        email: userFindByEmailMock.email,
+      });
+    });
+
+    it('should throw `DATABASE_ERROR` if repository fails', async () => {
+      jest.spyOn(userRepository, 'findByEmail').mockRejectedValue(new Error());
+
+      await expect(userService.findOneByEmail('1')).rejects.toThrowError(
         new ErrorException(ERRORS.DATABASE_ERROR),
       );
     });

@@ -28,15 +28,19 @@ export class ZodValidationPipe implements PipeTransform {
         });
         mappedValue = value;
       }
-      Object.keys(mappedValue).forEach((key) => {
-        if (key.endsWith('[]')) {
-          const newKey = key.slice(0, -2); // Remove the `[]` suffix
-          mappedValue[newKey] = Array.isArray(mappedValue[key])
-            ? mappedValue[key]
-            : [mappedValue[key]]; // Ensure it's always an array
-          delete mappedValue[key]; // Remove the old key
-        }
-      });
+      if (mappedValue) {
+        Object.keys(mappedValue).forEach((key) => {
+          if (key.endsWith('[]')) {
+            const newKey = key.slice(0, -2); // Remove the `[]` suffix
+            mappedValue[newKey] = Array.isArray(mappedValue[key])
+              ? mappedValue[key]
+              : [mappedValue[key]]; // Ensure it's always an array
+            delete mappedValue[key]; // Remove the old key
+          }
+        });
+      } else {
+        this.schema.parse(mappedValue);
+      }
 
       const parsedValue = this.schema.parse(mappedValue);
       return parsedValue;

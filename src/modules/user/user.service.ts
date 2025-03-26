@@ -20,18 +20,18 @@ export class UserService {
 
   async create(
     user: CreateUserBody,
-    currentUser?: CurrentUser,
+    pantryId?: string,
   ): Promise<UserServiceNamespace.CreateResponse> {
     try {
       const createdUser = await this.userRepository.create({
         email: user.email.toLowerCase(),
-        password: await hash(user.password),
-        birthday: user.birthday,
+        password: user.password,
+        birthday: new Date(user.birthday),
         firstname: user.firstName,
         surname: user.surname,
         pantry: {
-          connect: {
-            id: '',
+          create: {
+            name: user.pantryName,
           },
         },
       });
@@ -40,6 +40,11 @@ export class UserService {
         id: createdUser.id,
         firstName: createdUser.firstname,
         email: createdUser.email,
+        surname: createdUser.surname,
+        pantry: {
+          id: createdUser.pantry.id,
+          name: createdUser.pantry.name,
+        },
       };
     } catch (error) {
       throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR, error);
@@ -100,13 +105,13 @@ export class UserService {
     let user: User;
 
     try {
-      user = await this.userRepository.findById(email);
+      user = await this.userRepository.findByEmail(email);
     } catch (error) {
       throw new ErrorException(ERRORS.DATABASE_ERROR, error);
     }
 
     if (!user) {
-      throw new ErrorException(ERRORS.NOT_FOUND_ENTITY);
+      return undefined as UserServiceNamespace.FindOneByEmailResponse;
     }
 
     return {
@@ -114,6 +119,11 @@ export class UserService {
       id: user.id,
       firstName: user.firstname,
       email: user.email,
+      password: user.password,
+      pantry: {
+        id: user.pantry.id,
+        name: user.pantry.name,
+      },
     };
   }
 }

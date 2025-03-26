@@ -67,9 +67,10 @@ export const USER_MOCK = {
       id: '20',
       password: '$2b$10$aHvJOmzUXE.l.UAoLhbRN.ilCE0wYnMEMsOlSRX3oLVqVGiYnQrMq',
       email: 'manchester@gmail.com',
-      firstNme: 'User manchester',
+      firstName: 'User manchester',
       surname: 'manchester apagar',
-      birtday: '',
+      birthday: new Date('2001-01-21 22:44:29.728 -0300'),
+      pantryName: 'Pantry name',
     },
     findOneById: {
       id: '1',
@@ -89,6 +90,10 @@ export const USER_MOCK = {
       email: 'manchester@gmail.com',
       firstname: 'User manchester',
       surname: 'manchester apagar',
+      pantry: {
+        id: 'id',
+        name: 'Pantry name',
+      },
     },
     create: {
       id: 'id',
@@ -96,6 +101,10 @@ export const USER_MOCK = {
       email: 'manchester@gmail.com',
       firstname: 'User manchester',
       surname: 'manchester apagar',
+      pantry: {
+        id: 'id',
+        name: 'Pantry name',
+      },
     },
     findAll: [
       {
@@ -110,6 +119,21 @@ export const USER_MOCK = {
       email: 'manchester@gmail.com',
       firstname: 'User manchester',
       surname: 'manchester apagar',
+      pantry: {
+        id: 'id',
+        name: 'Pantry name',
+      },
+    },
+    findByEmail: {
+      id: 'id',
+      email: 'manchester@gmail.com',
+      firstname: 'User manchester',
+      surname: 'manchester apagar',
+      pantry: {
+        id: 'id',
+        name: 'Pantry name',
+      },
+      password: '',
     },
   },
 };

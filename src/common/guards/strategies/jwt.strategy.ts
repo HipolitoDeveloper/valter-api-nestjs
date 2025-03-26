@@ -1,42 +1,34 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
-import { UserService } from '../../../modules/user/user.service';
+import { AuthService } from '../../../modules/auth/auth.service';
 import { ErrorException } from '../../exceptions/error.exception';
 import { ERRORS } from '../../enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private userService: UserService) {
+  constructor(private authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey:
-        process.env.JWT_SECRET ||
-        'ccba9db2669a647f3b25d3917445f8a9cd1ce2a7b6c640540c09b9fb3b4eb87b',
+      secretOrKey: process.env.JWT_SECRET,
       passReqToCallback: true,
     });
   }
 
   public validate = async (request, token): Promise<boolean> => {
     try {
-      const currentUser = await this.userService.findOneById(token.sub);
+      const currentSession = await this.authService.getSessionByUserId(
+        token.sub,
+      );
 
-      // if (
-      //   currentUser.stateId === USER_STATE.BLOCKED ||
-      //   currentUser.tenant[0].stateId === BUSINESS_PARTNER_STATE.BLOCKED
-      // ) {
-      //   return false;
-      // }
+      if (!currentSession.refreshToken) {
+        return false;
+      }
 
       request['currentUser'] = {
-        id: currentUser.id,
-        email: currentUser.email,
-        // hierarchyCode: token.hierarchyCode,
-        // tenantId: token.tenantId,
-        // businessPartnerResponsibles: currentUser.businessPartnerResponsibles,
-        // group: currentUser.group,
-        // resources: currentUser.resources,
-        // stateId: currentUser.stateId,
+        id: currentSession.userId,
+        pantryId: currentSession.pantryId,
+        firstName: currentSession.firstName,
       };
       return true;
     } catch (error) {
