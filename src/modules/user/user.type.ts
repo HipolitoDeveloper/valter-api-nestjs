@@ -35,7 +35,6 @@ export namespace UserServiceNamespace {
     email: string;
     surname: string;
     pantry?: {
-      id: string;
       name: string;
     };
   };
@@ -43,7 +42,11 @@ export namespace UserServiceNamespace {
   export type UpdateResponse = {
     id: string;
     firstName: string;
+    surname: string;
     email: string;
+    pantry?: {
+      name: string;
+    };
   };
 
   export type FindOneByIdResponse = {
@@ -52,7 +55,6 @@ export namespace UserServiceNamespace {
     surname: string;
     email: string;
     pantry?: {
-      id: string;
       name: string;
     };
   };

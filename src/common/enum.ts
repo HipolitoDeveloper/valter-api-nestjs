@@ -35,6 +35,11 @@ export const ERRORS = {
   },
 };
 
+export const PROFILES = {
+  ADMINISTRATOR: 'administrator',
+  USER: 'user',
+};
+
 export const ERROR_ENTITY_KEYS = {
   BUSINESS_PARTNER: 'business_partner',
 };

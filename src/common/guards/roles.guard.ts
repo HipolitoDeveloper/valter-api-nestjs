@@ -29,9 +29,9 @@ export class RolesGuard implements CanActivate {
       throw new UnauthorizedException(ERRORS.UNAUTHORIZED);
     }
 
-    if (user.stateId === USER_STATE.CREATED) {
-      return false;
-    }
+    // if (user.stateId === USER_STATE.CREATED) {
+    //   return false;
+    // }
 
     const userResources = user.resources || [];
     const hasResource = userResources[resource];

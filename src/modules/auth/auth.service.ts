@@ -29,6 +29,10 @@ export class AuthService {
       throw new ErrorException(ERRORS.DATABASE_ERROR, error);
     }
 
+    if (!user) {
+      throw new ErrorException(ERRORS.NOT_FOUND_ENTITY);
+    }
+    //
     // if (user.stateId === USER_STATE.BLOCKED) {
     //   throw new UnauthorizedException(ERRORS.CUSTOM_ERROR.USER.BLOCKED_USER);
     // }
@@ -92,7 +96,7 @@ export class AuthService {
     const tokens = await this.getTokens(
       createdUser.id,
       createdUser.firstName,
-      createdUser.pantry.id,
+      createdUser.pantry.name,
     );
     await this.updateRefreshToken(createdUser.id, tokens.refreshToken);
 
@@ -176,8 +180,6 @@ export class AuthService {
 
   async getProfile(userId: string) {
     const user = await this.userService.findOneById(userId);
-
-    // delete user.refreshToken;
 
     return user;
   }

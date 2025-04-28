@@ -33,6 +33,25 @@ export class AuthRepository {
             id: true,
             firstname: true,
             pantry_id: true,
+            profile: {
+              select: {
+                name: true,
+                profile_actions: {
+                  select: {
+                    action: {
+                      select: {
+                        name: true,
+                        resource: {
+                          select: {
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
         refresh_token: true,
@@ -44,6 +63,7 @@ export class AuthRepository {
       firstName: sessionResult.user.firstname,
       pantryId: sessionResult.user.pantry_id,
       refreshToken: sessionResult?.refresh_token,
+      profile: sessionResult.user.profile,
     };
   }
 }

@@ -49,6 +49,9 @@ model user {
 
   pantry    pantry @relation(fields: [pantry_id], references: [id])
   pantry_id String @unique @db.Uuid
+
+  profile    profile @relation(fields: [profile_id], references: [id])
+  profile_id String  @unique @db.Uuid
 }
 
 model pantry {
@@ -122,6 +125,47 @@ model shoplist_item {
 
   product    product @relation(fields: [product_id], references: [id])
   product_id String  @unique @db.Uuid
+}
+
+model profile {
+  id              String            @id @default(uuid()) @db.Uuid
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  name            String            @unique
+  profile_actions profile_actions[]
+  user            user[]
+}
+
+model profile_actions {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  action     action   @relation(fields: [action_id], references: [id])
+  action_id  String   @db.Uuid
+
+  profile    profile @relation(fields: [profile_id], references: [id])
+  profile_id String  @db.Uuid
+
+  @@id([profile_id, action_id])
+}
+
+model action {
+  id             String            @id @default(uuid()) @db.Uuid
+  created_at     DateTime          @default(now())
+  updated_at     DateTime          @updatedAt
+  name           String
+  resource       resources         @relation(fields: [resource_id], references: [id])
+  resource_id    String            @db.Uuid
+  profile_action profile_actions[]
+
+  @@unique([name, resource_id])
+}
+
+model resources {
+  id         String   @id @default(uuid()) @db.Uuid
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  name       String   @unique
+  actions    action[]
 }
 
 enum PortionType {

@@ -30,8 +30,7 @@ export class UserController {
   @Roles(RESOURCES.USER, ACTIONS.CREATE)
   @UsePipes(new ZodValidationPipe(userValidator.createUser))
   async create(@Req() request: Request, @Body() user: CreateUserBody) {
-    const pantryId = '';
-    const createdUser = await this.userService.create(user, pantryId);
+    const createdUser = await this.userService.create(user);
     return createdUser;
   }
 

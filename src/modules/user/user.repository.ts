@@ -40,6 +40,12 @@ export class UserRepository {
         id: true,
         firstname: true,
         email: true,
+        surname: true,
+        pantry: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
   }

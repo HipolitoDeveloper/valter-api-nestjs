@@ -1,6 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
+import { actionResourceGrouper } from '../../../helper/action-resource.grouper';
 import { AuthService } from '../../../modules/auth/auth.service';
 import { ErrorException } from '../../exceptions/error.exception';
 import { ERRORS } from '../../enum';
@@ -29,6 +30,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         id: currentSession.userId,
         pantryId: currentSession.pantryId,
         firstName: currentSession.firstName,
+        resources: actionResourceGrouper(
+          currentSession.profile.profile_actions?.map(({ action }) => ({
+            action: action.name,
+            resource: action.resource.name,
+          })),
+        ),
+        profile: currentSession.profile.name,
       };
       return true;
     } catch (error) {

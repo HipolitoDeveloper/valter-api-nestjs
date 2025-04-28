@@ -3,9 +3,8 @@ import { UserRepository } from './user.repository';
 import {} from './user.validator';
 import { hash } from '../../helper/hash.handler';
 import { ErrorException } from '../../common/exceptions/error.exception';
-import { ERRORS } from '../../common/enum';
+import { ERRORS, PROFILES } from '../../common/enum';
 import {
-  CurrentUser,
   UserControllerNamespace,
   UserRepositoryNamespace,
   UserServiceNamespace,
@@ -20,8 +19,13 @@ export class UserService {
 
   async create(
     user: CreateUserBody,
-    pantryId?: string,
   ): Promise<UserServiceNamespace.CreateResponse> {
+    const existingUser = await this.userRepository.findByEmail(user.email);
+
+    if (existingUser) {
+      throw new ErrorException(ERRORS.CUSTOM_ERROR.USER.ALREADY_CREATED_USER);
+    }
+
     try {
       const createdUser = await this.userRepository.create({
         email: user.email.toLowerCase(),
@@ -34,6 +38,11 @@ export class UserService {
             name: user.pantryName,
           },
         },
+        profile: {
+          connect: {
+            name: PROFILES.USER,
+          },
+        },
       });
 
       return {
@@ -42,7 +51,6 @@ export class UserService {
         email: createdUser.email,
         surname: createdUser.surname,
         pantry: {
-          id: createdUser.pantry.id,
           name: createdUser.pantry.name,
         },
       };
@@ -54,6 +62,12 @@ export class UserService {
   async update(
     user: UpdateUserBody,
   ): Promise<UserServiceNamespace.UpdateResponse> {
+    const existingUser = await this.userRepository.findByEmail(user.email);
+
+    if (!existingUser) {
+      throw new ErrorException(ERRORS.NOT_FOUND_ENTITY);
+    }
+
     try {
       const updatedUser = await this.userRepository.update(
         {
@@ -70,6 +84,10 @@ export class UserService {
         id: updatedUser.id,
         firstName: updatedUser.firstname,
         email: updatedUser.email,
+        surname: updatedUser.surname,
+        pantry: {
+          name: updatedUser.pantry.name,
+        },
       };
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
@@ -96,6 +114,9 @@ export class UserService {
       id: user.id,
       firstName: user.firstname,
       email: user.email,
+      pantry: {
+        name: user.pantry.name,
+      },
     };
   }
 
