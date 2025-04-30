@@ -77,6 +77,79 @@ const createActionsFromUserResource = async (prisma: PrismaClient) => {
   });
 };
 
+const createActionsFromPantryResource = async (prisma: PrismaClient) => {
+  const generateUuid = uuidv4 as () => string;
+
+  const pantryResource = await prisma.resources.findFirstOrThrow({
+    select: {
+      id: true,
+    },
+    where: {
+      name: RESOURCES.PANTRY,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: pantryResource?.id,
+        name: ACTIONS.CREATE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: pantryResource?.id,
+      name: ACTIONS.CREATE,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: pantryResource?.id,
+        name: ACTIONS.UPDATE,
+      },
+    },
+    update: {},
+    create: {
+      resource_id: pantryResource?.id,
+      name: ACTIONS.UPDATE,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: pantryResource?.id,
+        name: ACTIONS.FIND_ALL,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: pantryResource?.id,
+      name: ACTIONS.FIND_ALL,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: pantryResource?.id,
+        name: ACTIONS.FIND_ONE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: pantryResource?.id,
+      name: ACTIONS.FIND_ONE,
+    },
+  });
+};
+
 export const createActions = async (prisma: PrismaClient) => {
   await createActionsFromUserResource(prisma);
+  await createActionsFromPantryResource(prisma);
 };
