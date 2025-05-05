@@ -46,7 +46,6 @@ describe('UserController', () => {
     expect(result).toEqual(userMock);
     expect(mockUserService.create).toHaveBeenCalledWith(
       userMock,
-      requestMock.currentUser,
     );
   });
 

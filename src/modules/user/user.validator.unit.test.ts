@@ -9,14 +9,9 @@ describe('UserValidator', () => {
         email: 'test@example.com',
         password: 'Password123!',
         firstName: 'John',
-        lastName: 'Doe',
-        businessPartnersId: [1],
-        contactPreference: ['SMS'],
-        contacts: [
-          { contact: '123456789', isWhatsapp: true },
-          { contact: '987654321', isWhatsapp: false },
-        ],
-        groupId: 1,
+        surname: 'Doe',
+        birthday: new Date(),
+        pantryName: 'SMS',
       };
     });
 
@@ -38,22 +33,6 @@ describe('UserValidator', () => {
         expect(issues[0].message).toBe('Required');
       }
     });
-
-    it('should fail validation if contacts have invalid structure', () => {
-      validCreateUserData.contacts = [
-        { contact: '123456789' }, // Missing `isWhatsapp` field
-      ];
-
-      const result: any =
-        userValidator.createUser.safeParse(validCreateUserData);
-      expect(result.success).toBe(false);
-
-      if (!result.success) {
-        const { issues } = result.error;
-        expect(issues[0].path).toEqual(['contacts', 0, 'isWhatsapp']);
-        expect(issues[0].message).toBe('Required');
-      }
-    });
   });
 
   describe('updateUser', () => {
@@ -61,18 +40,13 @@ describe('UserValidator', () => {
 
     beforeEach(() => {
       validUpdateUserData = {
-        id: 1,
+        id: 'id',
         email: 'test@example.com',
         password: 'Password123!',
         firstName: 'John',
-        lastName: 'Doe',
-        businessPartnersId: [1],
-        contactPreference: ['SMS'],
-        contacts: [
-          { id: 1, contact: '123456789', isWhatsapp: true },
-          { contact: '987654321', isWhatsapp: false },
-        ],
-        groupId: 1,
+        surname: 'Doe',
+        birthday: new Date(),
+        pantryName: 'SMS',
       };
     });
 
@@ -81,20 +55,5 @@ describe('UserValidator', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should fail validation if a contact is missing required fields', () => {
-      validUpdateUserData.contacts = [
-        { contact: '123456789' }, // Missing `isWhatsapp`
-      ];
-
-      const result: any =
-        userValidator.updateUser.safeParse(validUpdateUserData);
-      expect(result.success).toBe(false);
-
-      if (!result.success) {
-        const { issues } = result.error;
-        expect(issues[0].path).toEqual(['contacts', 0, 'isWhatsapp']);
-        expect(issues[0].message).toBe('Required');
-      }
-    });
   });
 });

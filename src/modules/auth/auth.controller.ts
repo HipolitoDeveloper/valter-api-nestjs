@@ -18,8 +18,8 @@ import { UserControllerNamespace } from '../user/user.type';
 import { AuthService } from './auth.service';
 import { authValidator, SigninBody } from './auth.validator';
 import { userValidator } from '../user/user.validator';
-import { Public } from 'src/common/decorators/public-route.decorator';
 import { Request } from '../../common/types/http.type';
+import { Public } from '../../common/decorators/public-route.decorator';
 
 import CreateUserBody = UserControllerNamespace.CreateUserBody;
 

@@ -11,9 +11,11 @@ describe('PantryController', () => {
 
   const mockPantryService = {
     create: jest.fn(),
+    update: jest.fn(),
+    findOne: jest.fn(),
+    findAll: jest.fn(),
   };
 
-  let createPantryBody: CreatePantryBody;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PantryController],
@@ -27,11 +29,15 @@ describe('PantryController', () => {
     }).compile();
 
     pantryController = module.get<PantryController>(PantryController);
-
-    createPantryBody = PANTRY_MOCK.SERVICE.createPantryBody;
   });
 
   describe('create', () => {
+    let createPantryBody: CreatePantryBody;
+
+    beforeEach(() => {
+      createPantryBody = PANTRY_MOCK.SERVICE.createPantryBody;
+    });
+
     it('should create a pantry', async () => {
       const result = await pantryController.create(createPantryBody);
       expect(result).toEqual(undefined);
@@ -41,6 +47,66 @@ describe('PantryController', () => {
     it('should throw an error if pantry creation fails', async () => {
       mockPantryService.create.mockRejectedValue(new Error('Error'));
       await expect(pantryController.create(createPantryBody)).rejects.toThrow(
+        'Error',
+      );
+    });
+  });
+
+  describe('update', () => {
+    let updatePantryBody: CreatePantryBody;
+
+    beforeEach(() => {
+      updatePantryBody = PANTRY_MOCK.SERVICE.updatePantryBody;
+    });
+    it('should update a pantry', async () => {
+      const result = await pantryController.update(updatePantryBody);
+      expect(result).toEqual(undefined);
+      expect(mockPantryService.update).toHaveBeenCalledWith(updatePantryBody);
+    });
+
+    it('should throw an error if pantry creation fails', async () => {
+      mockPantryService.update.mockRejectedValue(new Error('Error'));
+      await expect(pantryController.update(updatePantryBody)).rejects.toThrow(
+        'Error',
+      );
+    });
+  });
+
+  describe('findOne', () => {
+    let pantryIdMock: string;
+
+    beforeEach(() => {
+      pantryIdMock = PANTRY_MOCK.SERVICE.pantryId;
+    });
+    it('should finddOne pantry', async () => {
+      const result = await pantryController.findOne(pantryIdMock);
+      expect(result).toEqual(undefined);
+      expect(mockPantryService.findOne).toHaveBeenCalledWith(pantryIdMock);
+    });
+
+    it('should throw an error if pantry creation fails', async () => {
+      mockPantryService.findOne.mockRejectedValue(new Error('Error'));
+      await expect(pantryController.findOne(pantryIdMock)).rejects.toThrow(
+        'Error',
+      );
+    });
+  });
+
+  describe('findAll', () => {
+    let paginationMock: { limit: number; page: number };
+
+    beforeEach(() => {
+      paginationMock = PANTRY_MOCK.SERVICE.pagination;
+    });
+    it('should findAll pantries', async () => {
+      const result = await pantryController.findAll(paginationMock);
+      expect(result).toEqual(undefined);
+      expect(mockPantryService.findAll).toHaveBeenCalledWith(paginationMock);
+    });
+
+    it('should throw an error if findAll fails', async () => {
+      mockPantryService.findAll.mockRejectedValue(new Error('Error'));
+      await expect(pantryController.findAll(paginationMock)).rejects.toThrow(
         'Error',
       );
     });

@@ -3,64 +3,23 @@ import { actionResourceGrouper } from '../../src/helper/action-resource.grouper'
 export const USER_MOCK = {
   currentUser: {
     id: 4,
-    email: 'gabriel@gmail.com',
-    hierarchyCode: '75525-eed H',
-    tenantId: 1,
-    businessPartnerResponsibles: [
-      {
-        id: 1,
-        typeId: 1,
-        brandName: '',
-        legalName: 'Seed Holding Legal',
-      },
-    ],
-    group: {
-      id: 4,
-      name: 'Excellence Administrator',
-    },
+    pantryId: 'id',
+    firstName: 'Gabriel',
     resources: {
-      program: {
-        findNextCode: true,
+      pantry: {
         findOne: true,
-        remove: true,
         create: true,
         update: true,
         findAll: true,
-      },
-      travel: {
-        create: true,
-        update: true,
       },
       user: {
         create: true,
-        findAll: true,
-        me: true,
         findOne: true,
         update: true,
-        changeState: true,
-        changeAnotherPassword: true,
-      },
-      group: {
-        findAll: true,
-      },
-      businessPartner: {
-        create: true,
-        findAll: true,
-        findAllBusinessPartnerTypes: true,
-        findOne: true,
-        update: true,
-      },
-      dashboard: {
-        findTravelDetails: true,
-        downloadTravelDetails: true,
-        findTravelStageGrossWeightGroupedByTransportStatus: true,
-        findTravelStageGrossWeightGroupedByPickupStatus: true,
-        findTravelStageGrossWeightGroupedByDeliveryStatus: true,
-        findTravelStageAvgStayTime: true,
-        findTravelStageAvgLoadTime: true,
       },
     },
-    stateId: 1,
+    profile: 'Administrator',
+
   },
   SERVICE: {
     userMock: {

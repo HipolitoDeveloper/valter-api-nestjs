@@ -5,11 +5,18 @@ import { Prisma } from '.prisma/client';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PantryRepositoryNamespace {
   export type Pantry = Pick<Prisma.PantryGroupByOutputType, 'name' | 'id'>;
+
+  export type FindAllParams = {
+    limit: number;
+    offset: number;
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PantryControllerNamespace {
-  export type CreatePantryBody = z.infer<typeof pantryValidator.createPantry>;
+  export type FindAllQuery = z.infer<typeof pantryValidator.findAll>;
+  export type CreatePantryBody = z.infer<typeof pantryValidator.create>;
+  export type UpdatePantryBody = z.infer<typeof pantryValidator.update>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -17,4 +24,19 @@ export namespace PantryServiceNamespace {
   export type CreateResponse = {
     name: string;
   };
+
+  export type UpdateResponse = {
+    id: string;
+    name: string;
+  };
+
+  export type FindOneResponse = {
+    id: string;
+    name: string;
+  };
+
+  export type FindAllResponse = {
+    id: string;
+    name: string;
+  }[];
 }
