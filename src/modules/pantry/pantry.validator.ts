@@ -20,11 +20,11 @@ export const pantryValidator = {
       .uuid({ message: 'id is not a valid uuid' }),
   }),
   findAll: z.object({
-    page: z
-      .number({ message: 'page is required' })
-      .min(1, { message: 'page must be greater than or equal to 1' }),
-    limit: z
-      .number({ message: 'limit is required' })
-      .min(0, { message: 'limit must be greater than or equal to 0' }),
+    page: z.coerce
+      .number({ invalid_type_error: 'page must be a number' })
+      .min(1, { message: 'page must be ≥1' }),
+    limit: z.coerce
+      .number({ invalid_type_error: 'limit must be a number' })
+      .min(0, { message: 'limit must be ≥0' }),
   }),
 };

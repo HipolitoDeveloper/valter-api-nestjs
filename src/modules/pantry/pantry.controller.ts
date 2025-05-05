@@ -17,6 +17,7 @@ import { pantryValidator } from './pantry.validator';
 import CreatePantryBody = PantryControllerNamespace.CreatePantryBody;
 import UpdatePantryBody = PantryControllerNamespace.UpdatePantryBody;
 import FindAllQuery = PantryControllerNamespace.FindAllQuery;
+import FindOneParam = PantryControllerNamespace.FindOneParam;
 
 @Controller('pantry')
 export class PantryController {
@@ -31,22 +32,26 @@ export class PantryController {
 
   @Put('')
   @Roles(RESOURCES.PANTRY, ACTIONS.UPDATE)
-  @UsePipes(new ZodValidationPipe(pantryValidator.create))
+  @UsePipes(new ZodValidationPipe(pantryValidator.update))
   async update(@Body() pantry: UpdatePantryBody) {
     return this.pantryService.update(pantry);
-  }
-
-  @Get(':pantryId')
-  @Roles(RESOURCES.PANTRY, ACTIONS.FIND_ALL)
-  @UsePipes(new ZodValidationPipe(pantryValidator.findAll))
-  async findOne(@Param() pantryId: string) {
-    return this.pantryService.findOne(pantryId);
   }
 
   @Get('')
   @Roles(RESOURCES.PANTRY, ACTIONS.FIND_ALL)
   @UsePipes(new ZodValidationPipe(pantryValidator.findAll))
-  async findAll(@Query() { limit, page }: FindAllQuery) {
+  async findAll(
+    @Query(new ZodValidationPipe(pantryValidator.findAll))
+    { limit, page }: FindAllQuery,
+  ) {
     return this.pantryService.findAll({ limit, page });
+  }
+
+  @Get(':id')
+  @Roles(RESOURCES.PANTRY, ACTIONS.FIND_ALL)
+  async findOne(
+    @Param(new ZodValidationPipe(pantryValidator.findOne)) { id }: FindOneParam,
+  ) {
+    return this.pantryService.findOne(id);
   }
 }

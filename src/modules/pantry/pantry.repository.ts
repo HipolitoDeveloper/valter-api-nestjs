@@ -39,8 +39,8 @@ export class PantryRepository {
     });
   }
 
-  findAll({ offset, limit }: FindAllParams) {
-    return prisma.pantry.findMany({
+  async findAll({ offset, limit }: FindAllParams) {
+    const data = await prisma.pantry.findMany({
       take: limit,
       skip: offset,
       select: {
@@ -48,5 +48,12 @@ export class PantryRepository {
         name: true,
       },
     });
+
+    const totalCount = await prisma.pantry.count({});
+
+    return {
+      data,
+      totalCount: totalCount,
+    };
   }
 }

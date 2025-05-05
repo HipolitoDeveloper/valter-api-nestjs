@@ -79,16 +79,16 @@ describe('PantryController', () => {
       pantryIdMock = PANTRY_MOCK.SERVICE.pantryId;
     });
     it('should finddOne pantry', async () => {
-      const result = await pantryController.findOne(pantryIdMock);
+      const result = await pantryController.findOne({ id: pantryIdMock });
       expect(result).toEqual(undefined);
       expect(mockPantryService.findOne).toHaveBeenCalledWith(pantryIdMock);
     });
 
     it('should throw an error if pantry creation fails', async () => {
       mockPantryService.findOne.mockRejectedValue(new Error('Error'));
-      await expect(pantryController.findOne(pantryIdMock)).rejects.toThrow(
-        'Error',
-      );
+      await expect(
+        pantryController.findOne({ id: pantryIdMock }),
+      ).rejects.toThrow('Error');
     });
   });
 

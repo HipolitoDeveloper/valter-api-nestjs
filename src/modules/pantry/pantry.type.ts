@@ -14,6 +14,7 @@ export namespace PantryRepositoryNamespace {
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PantryControllerNamespace {
+  export type FindOneParam = z.infer<typeof pantryValidator.findOne>;
   export type FindAllQuery = z.infer<typeof pantryValidator.findAll>;
   export type CreatePantryBody = z.infer<typeof pantryValidator.create>;
   export type UpdatePantryBody = z.infer<typeof pantryValidator.update>;
@@ -22,6 +23,7 @@ export namespace PantryControllerNamespace {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PantryServiceNamespace {
   export type CreateResponse = {
+    id: string;
     name: string;
   };
 
@@ -36,7 +38,10 @@ export namespace PantryServiceNamespace {
   };
 
   export type FindAllResponse = {
-    id: string;
-    name: string;
-  }[];
+    data: {
+      id: string;
+      name: string;
+    }[];
+    totalCount: number;
+  };
 }

@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
 import { hash, isMatchHash } from '../../helper/hash.handler';
+import { PantryService } from '../pantry/pantry.service';
 import { UserService } from '../user/user.service';
 import {
   UserControllerNamespace,
@@ -19,6 +20,7 @@ export class AuthService {
     private authRepository: AuthRepository,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private pantryService: PantryService,
   ) {}
 
   async signIn(email: string, password: string) {
@@ -88,6 +90,14 @@ export class AuthService {
       createdUser = await this.userService.create({
         ...user,
         password: hashedPassword,
+      });
+    } catch (error) {
+      throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR, error);
+    }
+
+    try {
+      await this.pantryService.create({
+        name: user.pantryName,
       });
     } catch (error) {
       throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR, error);

@@ -29,6 +29,7 @@ export class PantryService {
     }
 
     return {
+      id: createdPantry.id,
       name: createdPantry.name,
     };
   }
@@ -39,8 +40,8 @@ export class PantryService {
     let updatedPantry: Pantry;
     try {
       updatedPantry = await this.pantryRepository.update(pantry);
-    } catch {
-      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR);
+    } catch (error) {
+      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
     }
 
     return {
@@ -55,8 +56,8 @@ export class PantryService {
     let pantry: Pantry;
     try {
       pantry = await this.pantryRepository.findOne(pantryId);
-    } catch {
-      throw new ErrorException(ERRORS.DATABASE_ERROR);
+    } catch (error) {
+      throw new ErrorException(ERRORS.DATABASE_ERROR, error);
     }
 
     if (!pantry) {
@@ -74,16 +75,19 @@ export class PantryService {
     page,
   }: FindAllQuery): Promise<PantryServiceNamespace.FindAllResponse> {
     const offset = limit && page ? limit * (page - 1) : undefined;
-    let pantries: Pantry[] = [];
+    let pantries: { data: Pantry[]; totalCount: number };
     try {
       pantries = await this.pantryRepository.findAll({ limit, offset });
     } catch {
       throw new ErrorException(ERRORS.DATABASE_ERROR);
     }
 
-    return pantries.map((pantry) => ({
-      id: pantry.id,
-      name: pantry.name,
-    }));
+    return {
+      data: pantries.data.map((pantry) => ({
+        id: pantry.id,
+        name: pantry.name,
+      })),
+      totalCount: pantries.totalCount,
+    };
   }
 }

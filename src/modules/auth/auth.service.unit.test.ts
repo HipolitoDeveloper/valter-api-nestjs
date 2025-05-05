@@ -6,8 +6,8 @@ import mocks from '../../../test/mocks';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
 import { hash, isMatchHash } from '../../helper/hash.handler';
+import { PantryService } from '../pantry/pantry.service';
 import { UserService } from '../user/user.service';
-import { UserControllerNamespace } from '../user/user.type';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 
@@ -18,16 +18,16 @@ jest.mock('../../helper/hash.handler', () => ({
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let userService: UserService;
-  let jwtService: JwtService;
-  let configService: ConfigService;
-  let authRepository: AuthRepository;
 
   const mockUserService = {
     findOneByEmail: jest.fn(),
     create: jest.fn(),
     findOneById: jest.fn(),
     update: jest.fn(),
+  };
+
+  const mockPantryService = {
+    create: jest.fn(),
   };
 
   const mockJwtService = {
@@ -51,6 +51,7 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         { provide: UserService, useValue: mockUserService },
+        { provide: PantryService, useValue: mockPantryService },
         { provide: JwtService, useValue: mockJwtService },
         { provide: ConfigService, useValue: mockConfigService },
         { provide: AuthRepository, useValue: mockAuthRepository },
@@ -58,10 +59,6 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    userService = module.get<UserService>(UserService);
-    jwtService = module.get<JwtService>(JwtService);
-    configService = module.get<ConfigService>(ConfigService);
-    authRepository = module.get<AuthRepository>(AuthRepository);
 
     userMock = mocks.USER_MOCK.SERVICE.userMock;
 
@@ -132,8 +129,10 @@ describe('AuthService', () => {
 
   describe('signUp', () => {
     let findOneByEmailMock;
+    let createdPantryMock;
     beforeEach(() => {
       findOneByEmailMock = mocks.USER_MOCK.REPOSITORY.findByEmail;
+      createdPantryMock = mocks.PANTRY_MOCK.SERVICE.createPantryResponse;
     });
 
     it('should sign up a user and return tokens', async () => {
@@ -144,6 +143,7 @@ describe('AuthService', () => {
       mockUserService.create.mockResolvedValue(findByEmailMock);
       mockJwtService.signAsync.mockResolvedValue('fake_token');
       mockConfigService.get.mockReturnValue('jwt_secret');
+      mockPantryService.create.mockResolvedValue(createdPantryMock);
 
       const result = await authService.signUp(userMock);
 
@@ -151,6 +151,9 @@ describe('AuthService', () => {
       expect(mockUserService.create).toHaveBeenCalledWith({
         ...userMock,
         password: hashedPassword,
+      });
+      expect(mockPantryService.create).toHaveBeenCalledWith({
+        name: userMock.pantryName,
       });
       expect(mockJwtService.signAsync).toHaveBeenCalledTimes(2);
       expect(result.accessToken).toEqual('fake_token');
@@ -170,6 +173,29 @@ describe('AuthService', () => {
         ...userMock,
         password: 'hashed_password',
       });
+    });
+
+    it('should throw ErrorException if pantry creation fails', async () => {
+      mockUserService.findOneByEmail.mockResolvedValue(null);
+      (hash as jest.Mock).mockResolvedValue('hashed_password');
+      mockPantryService.create.mockRejectedValue(new Error());
+
+      await expect(authService.signUp(userMock)).rejects.toThrowError(
+        new ErrorException(ERRORS.CREATE_ENTITY_ERROR),
+      );
+
+      expect(mockUserService.create).toHaveBeenCalledWith({
+        ...userMock,
+        password: 'hashed_password',
+      });
+    });
+
+    it('should throw ErrorException ALREADY_CREATED_USER if user is already created', async () => {
+      mockUserService.findOneByEmail.mockResolvedValue(findOneByEmailMock);
+
+      await expect(authService.signUp(userMock)).rejects.toThrowError(
+        new ErrorException(ERRORS.CUSTOM_ERROR.USER.ALREADY_CREATED_USER),
+      );
     });
   });
 

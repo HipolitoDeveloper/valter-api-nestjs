@@ -48,6 +48,7 @@ describe('PantryService', () => {
         name: pantryCreateMock.name,
       });
       expect(result).toEqual({
+        id: createdPantryMock.id,
         name: createdPantryMock.name,
       });
     });
@@ -135,13 +136,15 @@ describe('PantryService', () => {
   describe('findAll', () => {
     let pantriesMock;
     let paginationMock;
+    let findAllPantriesMock;
 
     beforeEach(() => {
       paginationMock = mocks.PANTRY_MOCK.SERVICE.pagination;
-      pantriesMock = mocks.PANTRY_MOCK.REPOSITORY.findAll;
+      pantriesMock = mocks.PANTRY_MOCK.SERVICE.findAllResponse;
+      findAllPantriesMock = mocks.PANTRY_MOCK.REPOSITORY.findAll;
     });
     it('should findAll pantries', async () => {
-      jest.spyOn(pantryRepository, 'findAll').mockResolvedValue(pantriesMock);
+      jest.spyOn(pantryRepository, 'findAll').mockResolvedValue(findAllPantriesMock);
 
       const result = await pantryService.findAll(paginationMock);
 

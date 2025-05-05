@@ -3,6 +3,8 @@ import { BasicStrategy } from '../../common/guards/strategies/basic.strategy';
 import { JwtStrategy } from '../../common/guards/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from '../../common/guards/strategies/jwt-refresh.strategy';
 import { ExceptionHandler } from '../../common/handler/exception.handler';
+import { PantryRepository } from '../pantry/pantry.repository';
+import { PantryService } from '../pantry/pantry.service';
 import { UserModule } from '../user/user.module';
 import { UserRepository } from '../user/user.repository';
 import { UserService } from '../user/user.service';
@@ -26,6 +28,8 @@ import { ConfigService } from '@nestjs/config';
     UserRepository,
     ConfigService,
     AuthRepository,
+    PantryService,
+    PantryRepository,
   ],
   imports: [
     PassportModule,
