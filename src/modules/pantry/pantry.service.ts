@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { ShoplistService } from '../shoplist/shoplist.service';
 import { PantryRepository } from './pantry.repository';
 import {
   PantryControllerNamespace,
@@ -14,7 +15,10 @@ import FindAllQuery = PantryControllerNamespace.FindAllQuery;
 
 @Injectable()
 export class PantryService {
-  constructor(private pantryRepository: PantryRepository) {}
+  constructor(
+    private pantryRepository: PantryRepository,
+    private shoplistService: ShoplistService,
+  ) {}
 
   async create(
     pantry: CreatePantryBody,
@@ -23,6 +27,15 @@ export class PantryService {
     try {
       createdPantry = await this.pantryRepository.create({
         name: pantry.name,
+      });
+    } catch {
+      throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR);
+    }
+
+    try {
+      await this.shoplistService.create({
+        name: createdPantry.name,
+        pantryId: createdPantry.id,
       });
     } catch {
       throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR);
