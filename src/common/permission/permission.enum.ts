@@ -1,6 +1,7 @@
 export const RESOURCES = {
   PANTRY: 'pantry',
   USER: 'user',
+  SHOPLIST: 'shoplist',
 };
 
 export const ACTIONS = {

@@ -1,24 +1,25 @@
-import { pantryValidator } from './pantry.validator';
+import { shoplistValidator } from './shoplist.validator';
 
-describe('pantryValidator', () => {
+describe('ShoplistValidator', () => {
   describe('create', () => {
-    let pantryData;
+    let shoplistData;
 
     beforeEach(() => {
-      pantryData = {
-        name: 'Test Pantry',
+      shoplistData = {
+        name: 'Test shoplist',
+        pantryId: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
       };
     });
 
     it('should successfully validate with valid date', () => {
-      const result = pantryValidator.create.safeParse(pantryData);
+      const result = shoplistValidator.create.safeParse(shoplistData);
       expect(result.success).toBe(true);
     });
 
-    it('should fail validation if pantry name is missing', () => {
-      delete pantryData.name;
-      const invalidData = { ...pantryData };
-      const result: any = pantryValidator.create.safeParse(invalidData);
+    it('should fail validation if shoplist name is missing', () => {
+      delete shoplistData.name;
+      const invalidData = { ...shoplistData };
+      const result: any = shoplistValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -28,10 +29,10 @@ describe('pantryValidator', () => {
       }
     });
 
-    it('should fail validation if pantry name is empty', () => {
-      pantryData.name = undefined;
-      const invalidData = { ...pantryData };
-      const result: any = pantryValidator.create.safeParse(invalidData);
+    it('should fail validation if shoplist name is empty', () => {
+      shoplistData.name = undefined;
+      const invalidData = { ...shoplistData };
+      const result: any = shoplistValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -41,10 +42,10 @@ describe('pantryValidator', () => {
       }
     });
 
-    it('should fail validation if pantry name is too short', () => {
-      pantryData.name = 'a';
-      const invalidData = { ...pantryData };
-      const result: any = pantryValidator.create.safeParse(invalidData);
+    it('should fail validation if shoplist name is too short', () => {
+      shoplistData.name = 'a';
+      const invalidData = { ...shoplistData };
+      const result: any = shoplistValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -54,10 +55,10 @@ describe('pantryValidator', () => {
       }
     });
 
-    it('should fail validation if pantry name is not a string', () => {
-      pantryData.name = 1;
-      const invalidData = { ...pantryData };
-      const result: any = pantryValidator.create.safeParse(invalidData);
+    it('should fail validation if shoplist name is not a string', () => {
+      shoplistData.name = 1;
+      const invalidData = { ...shoplistData };
+      const result: any = shoplistValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -69,25 +70,25 @@ describe('pantryValidator', () => {
   });
 
   describe('update', () => {
-    let pantryData;
+    let shoplistData;
 
     beforeEach(() => {
-      pantryData = {
+      shoplistData = {
         id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
-        name: 'Test Pantry',
+        name: 'Test shoplist',
       };
     });
 
     it('should successfully validate with valid date', () => {
-      const result = pantryValidator.update.safeParse(pantryData);
+      const result = shoplistValidator.update.safeParse(shoplistData);
       expect(result.success).toBe(true);
     });
 
-    describe('pantry name', () => {
-      it('should fail validation if pantry name is missing', () => {
-        delete pantryData.name;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+    describe('shoplist name', () => {
+      it('should fail validation if shoplist name is missing', () => {
+        delete shoplistData.name;
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -97,10 +98,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry name is empty', () => {
-        pantryData.name = undefined;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+      it('should fail validation if shoplist name is empty', () => {
+        shoplistData.name = undefined;
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -110,10 +111,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry name is too short', () => {
-        pantryData.name = 'a';
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+      it('should fail validation if shoplist name is too short', () => {
+        shoplistData.name = 'a';
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -123,10 +124,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry name is not a string', () => {
-        pantryData.name = 1;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+      it('should fail validation if shoplist name is not a string', () => {
+        shoplistData.name = 1;
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -137,11 +138,11 @@ describe('pantryValidator', () => {
       });
     });
 
-    describe('pantry id', () => {
-      it('should fail validation if pantry id is missing', () => {
-        delete pantryData.id;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+    describe('shoplist id', () => {
+      it('should fail validation if shoplist id is missing', () => {
+        delete shoplistData.id;
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -151,10 +152,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry id is empty', () => {
-        pantryData.id = undefined;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+      it('should fail validation if shoplist id is empty', () => {
+        shoplistData.id = undefined;
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -164,10 +165,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry id is not a string', () => {
-        pantryData.id = 1;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+      it('should fail validation if shoplist id is not a string', () => {
+        shoplistData.id = 1;
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -177,10 +178,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry id is not a valid uuid', () => {
-        pantryData.id = '12312312wsss';
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
+      it('should fail validation if shoplist id is not a valid uuid', () => {
+        shoplistData.id = '12312312wsss';
+        const invalidData = { ...shoplistData };
+        const result: any = shoplistValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -202,15 +203,15 @@ describe('pantryValidator', () => {
     });
 
     it('should successfully validate with valid date', () => {
-      const result = pantryValidator.findOne.safeParse(params);
+      const result = shoplistValidator.findOne.safeParse(params);
       expect(result.success).toBe(true);
     });
 
     describe('id', () => {
-      it('should fail validation if pantry id is missing', () => {
+      it('should fail validation if shoplist id is missing', () => {
         delete params.id;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findOne.safeParse(invalidData);
+        const result: any = shoplistValidator.findOne.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -220,10 +221,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry id is empty', () => {
+      it('should fail validation if shoplist id is empty', () => {
         params.id = undefined;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findOne.safeParse(invalidData);
+        const result: any = shoplistValidator.findOne.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -233,10 +234,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry id is not a string', () => {
+      it('should fail validation if shoplist id is not a string', () => {
         params.id = 1;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findOne.safeParse(invalidData);
+        const result: any = shoplistValidator.findOne.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -246,10 +247,10 @@ describe('pantryValidator', () => {
         }
       });
 
-      it('should fail validation if pantry id is not a valid uuid', () => {
+      it('should fail validation if shoplist id is not a valid uuid', () => {
         params.id = '12312312wsss';
         const invalidData = { ...params };
-        const result: any = pantryValidator.findOne.safeParse(invalidData);
+        const result: any = shoplistValidator.findOne.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -272,7 +273,7 @@ describe('pantryValidator', () => {
     });
 
     it('should successfully validate with valid date', () => {
-      const result = pantryValidator.findAll.safeParse(params);
+      const result = shoplistValidator.findAll.safeParse(params);
       expect(result.success).toBe(true);
     });
 
@@ -280,7 +281,7 @@ describe('pantryValidator', () => {
       it('should fail validation if page is missing', () => {
         delete params.page;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findAll.safeParse(invalidData);
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -293,7 +294,7 @@ describe('pantryValidator', () => {
       it('should fail validation if page is empty', () => {
         params.page = undefined;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findAll.safeParse(invalidData);
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -303,19 +304,16 @@ describe('pantryValidator', () => {
         }
       });
 
-
       it('should fail validation if page has a value less than 1', () => {
         params.page = 0;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findAll.safeParse(invalidData);
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('page');
-          expect(error.issues[0].message).toBe(
-            'page must be ≥1',
-          );
+          expect(error.issues[0].message).toBe('page must be ≥1');
         }
       });
     });
@@ -324,40 +322,53 @@ describe('pantryValidator', () => {
       it('should fail validation if limit is missing', () => {
         delete params.limit;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findAll.safeParse(invalidData);
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('limit');
-          expect(error.issues[0].message).toBe('limit must be a number');
+          expect(error.issues[0].message).toBe('limit is required');
         }
       });
 
       it('should fail validation if limit is empty', () => {
         params.limit = undefined;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findAll.safeParse(invalidData);
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('limit');
-          expect(error.issues[0].message).toBe('limit must be a number');
+          expect(error.issues[0].message).toBe('limit is required');
+        }
+      });
+
+      it('should fail validation if limit is not a number', () => {
+        params.limit = '1';
+        const invalidData = { ...params };
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          const error = result.error;
+          expect(error.issues[0].path).toContain('limit');
+          expect(error.issues[0].message).toBe('limit is required');
         }
       });
 
       it('should fail validation if limit has a value less than 0', () => {
         params.limit = -1;
         const invalidData = { ...params };
-        const result: any = pantryValidator.findAll.safeParse(invalidData);
+        const result: any = shoplistValidator.findAll.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('limit');
           expect(error.issues[0].message).toBe(
-            'limit must be ≥0',
+            'limit must be greater than or equal to 0',
           );
         }
       });
