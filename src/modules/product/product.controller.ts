@@ -42,9 +42,9 @@ export class ProductController {
   @UsePipes(new ZodValidationPipe(productValidator.findAll))
   async findAll(
     @Query(new ZodValidationPipe(productValidator.findAll))
-    { limit, page }: FindAllQuery,
+    { limit, page, productName }: FindAllQuery,
   ) {
-    return this.productService.findAll({ limit, page });
+    return this.productService.findAll({ limit, page, productName });
   }
 
   @Get(':id')

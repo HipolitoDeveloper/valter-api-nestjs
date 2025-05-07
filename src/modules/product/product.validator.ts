@@ -29,5 +29,6 @@ export const productValidator = {
     limit: z.coerce
       .number({ invalid_type_error: 'limit must be a number' })
       .min(0, { message: 'limit must be ≥0' }),
+    productName: z.string().optional(),
   }),
 };

@@ -84,11 +84,11 @@ model product {
   id           String        @id @default(uuid()) @db.Uuid
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
-  name         String
+  name         String        @unique @db.VarChar(255)
   pantry_items pantry_item[]
 
   category      category       @relation(fields: [category_id], references: [id])
-  category_id   String         @unique @db.Uuid
+  category_id   String         @db.Uuid
   shoplist_item shoplist_item?
 }
 

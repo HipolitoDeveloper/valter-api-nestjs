@@ -14,6 +14,7 @@ export namespace ProductRepositoryNamespace {
   export type FindAllParams = {
     limit: number;
     offset: number;
+    productName?: string;
   };
 }
 

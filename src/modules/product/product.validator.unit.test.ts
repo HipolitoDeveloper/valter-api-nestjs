@@ -7,7 +7,7 @@ describe('ProductValidator', () => {
     beforeEach(() => {
       productData = {
         name: 'Test product',
-        pantryId: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+        categoryId: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
       };
     });
 
@@ -269,6 +269,7 @@ describe('ProductValidator', () => {
       params = {
         page: 1,
         limit: 10,
+        productName: '10',
       };
     });
 
@@ -345,7 +346,6 @@ describe('ProductValidator', () => {
         }
       });
 
-
       it('should fail validation if limit has a value less than 0', () => {
         params.limit = -1;
         const invalidData = { ...params };
@@ -355,8 +355,23 @@ describe('ProductValidator', () => {
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('limit');
+          expect(error.issues[0].message).toBe('limit must be ≥0');
+        }
+      });
+    });
+
+    describe('productName', () => {
+      it('should fail validation if productName is not a string', () => {
+        params.productName = 1;
+        const invalidData = { ...params };
+        const result: any = productValidator.findAll.safeParse(invalidData);
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          const error = result.error;
+          expect(error.issues[0].path).toContain('productName');
           expect(error.issues[0].message).toBe(
-            'limit must be ≥0',
+            'Expected string, received number',
           );
         }
       });

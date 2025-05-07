@@ -94,21 +94,28 @@ describe('ProductController', () => {
 
   describe('findAll', () => {
     let paginationMock: { limit: number; page: number };
-
+    let findAllParamsMock;
     beforeEach(() => {
       paginationMock = PRODUCT_MOCK.SERVICE.pagination;
+
+      findAllParamsMock = {
+        ...paginationMock,
+        productName: '',
+      };
     });
     it('should findAll products', async () => {
-      const result = await productController.findAll(paginationMock);
+      const result = await productController.findAll(findAllParamsMock);
       expect(result).toEqual(undefined);
-      expect(mockProductService.findAll).toHaveBeenCalledWith(paginationMock);
+      expect(mockProductService.findAll).toHaveBeenCalledWith(
+        findAllParamsMock,
+      );
     });
 
     it('should throw an error if findAll fails', async () => {
       mockProductService.findAll.mockRejectedValue(new Error('Error'));
-      await expect(productController.findAll(paginationMock)).rejects.toThrow(
-        'Error',
-      );
+      await expect(
+        productController.findAll(findAllParamsMock),
+      ).rejects.toThrow('Error');
     });
   });
 });

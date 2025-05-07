@@ -45,8 +45,18 @@ export class ProductRepository {
     });
   }
 
-  async findAll({ offset, limit }: FindAllParams) {
+  async findAll({ offset, limit, productName }: FindAllParams) {
+    const where: Prisma.productWhereInput = {};
+
+    if (productName) {
+      where.name = {
+        contains: productName.trim(),
+        mode: 'insensitive',
+      };
+    }
+
     const data = await prisma.product.findMany({
+      where,
       take: limit,
       skip: offset,
       select: {
@@ -64,6 +74,7 @@ export class ProductRepository {
     const totalCount = await prisma.product.count({});
 
     return {
+      where,
       data,
       totalCount: totalCount,
     };

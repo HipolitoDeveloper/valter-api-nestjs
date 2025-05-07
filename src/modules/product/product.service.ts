@@ -29,8 +29,8 @@ export class ProductService {
           },
         },
       });
-    } catch {
-      throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR);
+    } catch (error) {
+      throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR, error);
     }
 
     return {
@@ -82,11 +82,16 @@ export class ProductService {
   async findAll({
     limit,
     page,
+    productName,
   }: FindAllQuery): Promise<ProductServiceNamespace.FindAllResponse> {
     const offset = limit && page ? limit * (page - 1) : undefined;
     let products: { data: Product[]; totalCount: number };
     try {
-      products = await this.productRepository.findAll({ limit, offset });
+      products = await this.productRepository.findAll({
+        limit,
+        offset,
+        productName,
+      });
     } catch {
       throw new ErrorException(ERRORS.DATABASE_ERROR);
     }
