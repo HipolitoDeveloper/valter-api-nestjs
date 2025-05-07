@@ -35,6 +35,12 @@ export class ProductRepository {
       select: {
         id: true,
         name: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
@@ -46,6 +52,12 @@ export class ProductRepository {
       select: {
         id: true,
         name: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 

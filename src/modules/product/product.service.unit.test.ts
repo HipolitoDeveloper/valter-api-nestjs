@@ -118,6 +118,10 @@ describe('ProductService', () => {
       expect(result).toEqual({
         id: productMock.id,
         name: productMock.name,
+        category: {
+          id: productMock.category.id,
+          name: productMock.category.name,
+        }
       });
     });
 

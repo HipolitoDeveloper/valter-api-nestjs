@@ -4,7 +4,12 @@ import { Prisma } from '.prisma/client';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ProductRepositoryNamespace {
-  export type Product = Pick<Prisma.ProductGroupByOutputType, 'name' | 'id'>;
+  export type Product = Pick<Prisma.ProductGroupByOutputType, 'name' | 'id'> & {
+    category?: {
+      id: string;
+      name: string;
+    };
+  };
 
   export type FindAllParams = {
     limit: number;
@@ -35,6 +40,10 @@ export namespace ProductServiceNamespace {
   export type FindOneResponse = {
     id: string;
     name: string;
+    category: {
+      id: string;
+      name: string;
+    };
   };
 
   export type FindAllResponse = {

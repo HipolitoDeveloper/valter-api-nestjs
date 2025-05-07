@@ -27,6 +27,10 @@ export const PRODUCT_MOCK = {
         {
           id: '01ce2a72-2c23-4ffb-9f09-08edf0fabfa9',
           name: 'Product First',
+          category: {
+            id: 'id',
+            name: 'Category name',
+          },
         },
       ],
       totalCount: 10,
@@ -46,6 +50,10 @@ export const PRODUCT_MOCK = {
     findOne: {
       id: 'id',
       name: 'Product name',
+      category: {
+        id: 'id',
+        name: 'Category name',
+      },
     },
 
     findAll: {
@@ -53,6 +61,10 @@ export const PRODUCT_MOCK = {
         {
           id: '01ce2a72-2c23-4ffb-9f09-08edf0fabfa9',
           name: 'Product First',
+          category: {
+            id: 'id',
+            name: 'Category name',
+          },
         },
       ],
       totalCount: 10,

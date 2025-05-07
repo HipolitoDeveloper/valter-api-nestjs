@@ -72,6 +72,10 @@ export class ProductService {
     return {
       id: product.id,
       name: product.name,
+      category: {
+        id: product.category.id,
+        name: product.category.name,
+      },
     };
   }
 
@@ -91,6 +95,10 @@ export class ProductService {
       data: products.data.map((product) => ({
         id: product.id,
         name: product.name,
+        category: {
+          id: product.category.id,
+          name: product.category.name,
+        },
       })),
       totalCount: products.totalCount,
     };
