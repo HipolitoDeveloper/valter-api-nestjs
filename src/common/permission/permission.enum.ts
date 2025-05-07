@@ -2,6 +2,7 @@ export const RESOURCES = {
   PANTRY: 'pantry',
   USER: 'user',
   SHOPLIST: 'shoplist',
+  PRODUCT: 'product',
 };
 
 export const ACTIONS = {

@@ -5,6 +5,8 @@ import { JwtRefreshStrategy } from '../../common/guards/strategies/jwt-refresh.s
 import { ExceptionHandler } from '../../common/handler/exception.handler';
 import { PantryRepository } from '../pantry/pantry.repository';
 import { PantryService } from '../pantry/pantry.service';
+import { ShoplistRepository } from '../shoplist/shoplist.repository';
+import { ShoplistService } from '../shoplist/shoplist.service';
 import { UserModule } from '../user/user.module';
 import { UserRepository } from '../user/user.repository';
 import { UserService } from '../user/user.service';
@@ -30,6 +32,8 @@ import { ConfigService } from '@nestjs/config';
     AuthRepository,
     PantryService,
     PantryRepository,
+    ShoplistRepository,
+    ShoplistService
   ],
   imports: [
     PassportModule,

@@ -1,0 +1,58 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UsePipes,
+} from '@nestjs/common';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { ACTIONS, RESOURCES } from '../../common/permission/permission.enum';
+import { ZodValidationPipe } from '../../common/pipe/zod-validation.pipe';
+import { ProductService } from './product.service';
+import { ProductControllerNamespace } from './product.type';
+import { productValidator } from './product.validator';
+import CreateProductBody = ProductControllerNamespace.CreateProductBody;
+import UpdateProductBody = ProductControllerNamespace.UpdateProductBody;
+import FindAllQuery = ProductControllerNamespace.FindAllQuery;
+import FindOneParam = ProductControllerNamespace.FindOneParam;
+
+@Controller('product')
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
+  @Post('')
+  @Roles(RESOURCES.PRODUCT, ACTIONS.CREATE)
+  @UsePipes(new ZodValidationPipe(productValidator.create))
+  async create(@Body() product: CreateProductBody) {
+    return this.productService.create(product);
+  }
+
+  @Put('')
+  @Roles(RESOURCES.PRODUCT, ACTIONS.UPDATE)
+  @UsePipes(new ZodValidationPipe(productValidator.update))
+  async update(@Body() product: UpdateProductBody) {
+    return this.productService.update(product);
+  }
+
+  @Get('')
+  @Roles(RESOURCES.PRODUCT, ACTIONS.FIND_ALL)
+  @UsePipes(new ZodValidationPipe(productValidator.findAll))
+  async findAll(
+    @Query(new ZodValidationPipe(productValidator.findAll))
+    { limit, page }: FindAllQuery,
+  ) {
+    return this.productService.findAll({ limit, page });
+  }
+
+  @Get(':id')
+  @Roles(RESOURCES.PRODUCT, ACTIONS.FIND_ALL)
+  async findOne(
+    @Param(new ZodValidationPipe(productValidator.findOne))
+    { id }: FindOneParam,
+  ) {
+    return this.productService.findOne(id);
+  }
+}

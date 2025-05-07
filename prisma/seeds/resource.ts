@@ -26,4 +26,26 @@ export const createResource = async (prisma: PrismaClient) => {
       name: RESOURCES.PANTRY,
     },
   });
+
+  await prisma.resources.upsert({
+    where: {
+      name: RESOURCES.SHOPLIST,
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      name: RESOURCES.SHOPLIST,
+    },
+  });
+
+  await prisma.resources.upsert({
+    where: {
+      name: RESOURCES.PRODUCT,
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      name: RESOURCES.PRODUCT,
+    },
+  });
 };

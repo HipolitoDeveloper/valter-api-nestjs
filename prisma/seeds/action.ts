@@ -149,7 +149,153 @@ const createActionsFromPantryResource = async (prisma: PrismaClient) => {
   });
 };
 
+const createActionsFromShoplistResource = async (prisma: PrismaClient) => {
+  const generateUuid = uuidv4 as () => string;
+
+  const shoplistResource = await prisma.resources.findFirstOrThrow({
+    select: {
+      id: true,
+    },
+    where: {
+      name: RESOURCES.SHOPLIST,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: shoplistResource?.id,
+        name: ACTIONS.CREATE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: shoplistResource?.id,
+      name: ACTIONS.CREATE,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: shoplistResource?.id,
+        name: ACTIONS.UPDATE,
+      },
+    },
+    update: {},
+    create: {
+      resource_id: shoplistResource?.id,
+      name: ACTIONS.UPDATE,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: shoplistResource?.id,
+        name: ACTIONS.FIND_ALL,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: shoplistResource?.id,
+      name: ACTIONS.FIND_ALL,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: shoplistResource?.id,
+        name: ACTIONS.FIND_ONE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: shoplistResource?.id,
+      name: ACTIONS.FIND_ONE,
+    },
+  });
+};
+
+const createActionsFromProductResource = async (prisma: PrismaClient) => {
+  const generateUuid = uuidv4 as () => string;
+
+  const productResource = await prisma.resources.findFirstOrThrow({
+    select: {
+      id: true,
+    },
+    where: {
+      name: RESOURCES.PRODUCT,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: productResource?.id,
+        name: ACTIONS.CREATE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: productResource?.id,
+      name: ACTIONS.CREATE,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: productResource?.id,
+        name: ACTIONS.UPDATE,
+      },
+    },
+    update: {},
+    create: {
+      resource_id: productResource?.id,
+      name: ACTIONS.UPDATE,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: productResource?.id,
+        name: ACTIONS.FIND_ALL,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: productResource?.id,
+      name: ACTIONS.FIND_ALL,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: productResource?.id,
+        name: ACTIONS.FIND_ONE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: productResource?.id,
+      name: ACTIONS.FIND_ONE,
+    },
+  });
+};
+
 export const createActions = async (prisma: PrismaClient) => {
   await createActionsFromUserResource(prisma);
   await createActionsFromPantryResource(prisma);
+  await createActionsFromShoplistResource(prisma);
+  await createActionsFromProductResource(prisma);
 };

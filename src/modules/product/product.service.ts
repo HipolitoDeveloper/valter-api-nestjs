@@ -1,0 +1,98 @@
+import { Injectable } from '@nestjs/common';
+import { ERRORS } from '../../common/enum';
+import { ErrorException } from '../../common/exceptions/error.exception';
+import { ProductRepository } from './product.repository';
+import {
+  ProductControllerNamespace,
+  ProductRepositoryNamespace,
+  ProductServiceNamespace,
+} from './product.type';
+import Product = ProductRepositoryNamespace.Product;
+import CreateProductBody = ProductControllerNamespace.CreateProductBody;
+import UpdateProductBody = ProductControllerNamespace.UpdateProductBody;
+import FindAllQuery = ProductControllerNamespace.FindAllQuery;
+
+@Injectable()
+export class ProductService {
+  constructor(private productRepository: ProductRepository) {}
+
+  async create(
+    product: CreateProductBody,
+  ): Promise<ProductServiceNamespace.CreateResponse> {
+    let createdProduct: Product;
+    try {
+      createdProduct = await this.productRepository.create({
+        name: product.name,
+        category: {
+          connect: {
+            id: product.categoryId,
+          },
+        },
+      });
+    } catch {
+      throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR);
+    }
+
+    return {
+      id: createdProduct.id,
+      name: createdProduct.name,
+    };
+  }
+
+  async update(
+    product: UpdateProductBody,
+  ): Promise<ProductServiceNamespace.UpdateResponse> {
+    let updatedProduct: Product;
+    try {
+      updatedProduct = await this.productRepository.update(product);
+    } catch (error) {
+      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
+    }
+
+    return {
+      id: updatedProduct.id,
+      name: updatedProduct.name,
+    };
+  }
+
+  async findOne(
+    productId: string,
+  ): Promise<ProductServiceNamespace.FindOneResponse> {
+    let product: Product;
+    try {
+      product = await this.productRepository.findOne(productId);
+    } catch (error) {
+      throw new ErrorException(ERRORS.DATABASE_ERROR, error);
+    }
+
+    if (!product) {
+      throw new ErrorException(ERRORS.NOT_FOUND_ENTITY);
+    }
+
+    return {
+      id: product.id,
+      name: product.name,
+    };
+  }
+
+  async findAll({
+    limit,
+    page,
+  }: FindAllQuery): Promise<ProductServiceNamespace.FindAllResponse> {
+    const offset = limit && page ? limit * (page - 1) : undefined;
+    let products: { data: Product[]; totalCount: number };
+    try {
+      products = await this.productRepository.findAll({ limit, offset });
+    } catch {
+      throw new ErrorException(ERRORS.DATABASE_ERROR);
+    }
+
+    return {
+      data: products.data.map((product) => ({
+        id: product.id,
+        name: product.name,
+      })),
+      totalCount: products.totalCount,
+    };
+  }
+}
