@@ -12,4 +12,5 @@ export const ACTIONS = {
   CREATE: 'create',
   REMOVE: 'remove',
   ME: 'me',
+  ADD_ITEMS: 'addItems',
 };

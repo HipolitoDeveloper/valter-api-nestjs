@@ -9,8 +9,8 @@ import {
 } from './shoplist.type';
 import Shoplist = ShoplistRepositoryNamespace.Shoplist;
 import CreateShoplistBody = ShoplistControllerNamespace.CreateShoplistBody;
-import UpdateShoplistBody = ShoplistControllerNamespace.UpdateShoplistBody;
 import FindAllQuery = ShoplistControllerNamespace.FindAllQuery;
+import UpdateWithIdBody = ShoplistControllerNamespace.UpdateWithIdBody;
 
 @Injectable()
 export class ShoplistService {
@@ -36,22 +36,6 @@ export class ShoplistService {
     return {
       id: createdShoplist.id,
       name: createdShoplist.name,
-    };
-  }
-
-  async update(
-    shoplist: UpdateShoplistBody,
-  ): Promise<ShoplistServiceNamespace.UpdateResponse> {
-    let updatedShoplist: Shoplist;
-    try {
-      updatedShoplist = await this.shoplistRepository.update(shoplist);
-    } catch (error) {
-      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
-    }
-
-    return {
-      id: updatedShoplist.id,
-      name: updatedShoplist.name,
     };
   }
 
@@ -93,6 +77,38 @@ export class ShoplistService {
         name: sholist.name,
       })),
       totalCount: shoplists.totalCount,
+    };
+  }
+
+  async update({
+    id,
+    items,
+    name,
+  }: UpdateWithIdBody): Promise<ShoplistServiceNamespace.UpdateResponse> {
+    let shoplist: Shoplist;
+
+    try {
+      shoplist = await this.shoplistRepository.update({
+        shoplistId: id,
+        items,
+        name,
+      });
+    } catch (error) {
+      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
+    }
+
+    return {
+      id: shoplist.id,
+      name: shoplist.name,
+      items: shoplist.shoplist_items.map((shoplistItem) => {
+        return {
+          id: shoplistItem.id,
+          name: shoplistItem.product.name,
+          portion: shoplistItem.portion,
+          portionType: shoplistItem.portion_type,
+          productId: shoplistItem.product.id,
+        };
+      }),
     };
   }
 }

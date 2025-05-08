@@ -87,9 +87,9 @@ model product {
   name         String        @unique @db.VarChar(255)
   pantry_items pantry_item[]
 
-  category      category       @relation(fields: [category_id], references: [id])
-  category_id   String         @db.Uuid
-  shoplist_item shoplist_item?
+  category      category        @relation(fields: [category_id], references: [id])
+  category_id   String          @db.Uuid
+  shoplist_item shoplist_item[]
 }
 
 model category {
@@ -121,10 +121,12 @@ model shoplist_item {
   portion_type PortionType
 
   shoplist    shoplist @relation(fields: [shoplist_id], references: [id])
-  shoplist_id String   @unique @db.Uuid
+  shoplist_id String   @db.Uuid
 
   product    product @relation(fields: [product_id], references: [id])
-  product_id String  @unique @db.Uuid
+  product_id String  @db.Uuid
+
+  @@unique([shoplist_id, product_id])
 }
 
 model profile {

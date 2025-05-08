@@ -18,6 +18,7 @@ import CreateShoplistBody = ShoplistControllerNamespace.CreateShoplistBody;
 import UpdateShoplistBody = ShoplistControllerNamespace.UpdateShoplistBody;
 import FindAllQuery = ShoplistControllerNamespace.FindAllQuery;
 import FindOneParam = ShoplistControllerNamespace.FindOneParam;
+import ShoplistIdParam = ShoplistControllerNamespace.ShoplistIdParam;
 
 @Controller('shoplist')
 export class ShoplistController {
@@ -28,13 +29,6 @@ export class ShoplistController {
   @UsePipes(new ZodValidationPipe(shoplistValidator.create))
   async create(@Body() shoplist: CreateShoplistBody) {
     return this.shoplistService.create(shoplist);
-  }
-
-  @Put('')
-  @Roles(RESOURCES.SHOPLIST, ACTIONS.UPDATE)
-  @UsePipes(new ZodValidationPipe(shoplistValidator.update))
-  async update(@Body() shoplist: UpdateShoplistBody) {
-    return this.shoplistService.update(shoplist);
   }
 
   @Get('')
@@ -54,5 +48,16 @@ export class ShoplistController {
     { id }: FindOneParam,
   ) {
     return this.shoplistService.findOne(id);
+  }
+
+  @Put(':id')
+  @Roles(RESOURCES.SHOPLIST, ACTIONS.UPDATE)
+  async update(
+    @Param(new ZodValidationPipe(shoplistValidator.shoplistId))
+    { id }: ShoplistIdParam,
+    @Body(new ZodValidationPipe(shoplistValidator.update))
+    { items, name }: UpdateShoplistBody,
+  ) {
+    return this.shoplistService.update({ id, items, name });
   }
 }

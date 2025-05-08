@@ -5,6 +5,7 @@ import { ShoplistController } from './shoplist.controller';
 import { ShoplistService } from './shoplist.service';
 import { ShoplistControllerNamespace } from './shoplist.type';
 import CreateShoplistBody = ShoplistControllerNamespace.CreateShoplistBody;
+import UpdateShoplistBody = ShoplistControllerNamespace.UpdateShoplistBody;
 
 describe('ShoplistController', () => {
   let shoplistController: ShoplistController;
@@ -55,23 +56,29 @@ describe('ShoplistController', () => {
   });
 
   describe('update', () => {
-    let updateShoplistBody: CreateShoplistBody;
+    let updateShoplistBody: UpdateShoplistBody;
+    let shoplistId;
 
     beforeEach(() => {
       updateShoplistBody = SHOPLIST_MOCK.SERVICE.updateShoplistBody;
+      shoplistId = SHOPLIST_MOCK.SERVICE.shoplistId;
     });
     it('should update a shoplist', async () => {
-      const result = await shoplistController.update(updateShoplistBody);
-      expect(result).toEqual(undefined);
-      expect(mockShoplistService.update).toHaveBeenCalledWith(
-        updateShoplistBody,
+      const result = await shoplistController.update(
+        { id: shoplistId },
+        { ...updateShoplistBody },
       );
+      expect(result).toEqual(undefined);
+      expect(mockShoplistService.update).toHaveBeenCalledWith({
+        id: shoplistId,
+        ...updateShoplistBody,
+      });
     });
 
     it('should throw an error if shoplist creation fails', async () => {
       mockShoplistService.update.mockRejectedValue(new Error('Error'));
       await expect(
-        shoplistController.update(updateShoplistBody),
+        shoplistController.update(shoplistId, updateShoplistBody),
       ).rejects.toThrow('Error');
     });
   });

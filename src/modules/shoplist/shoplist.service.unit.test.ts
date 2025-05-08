@@ -49,8 +49,8 @@ describe('ShoplistService', () => {
         pantry: {
           connect: {
             id: shoplistCreateMock.pantryId,
-          }
-        }
+          },
+        },
       });
       expect(result).toEqual({
         id: createdShoplistMock.id,
@@ -68,36 +68,41 @@ describe('ShoplistService', () => {
   });
 
   describe('update', () => {
-    let shoplistUpdateMock;
+    let updateShoplistBodyMock;
     let updatedShoplistMock;
+    let updateShoplistResponseMock;
 
     beforeEach(() => {
-      shoplistUpdateMock = mocks.SHOPLIST_MOCK.SERVICE.updateShoplistBody;
+      updateShoplistBodyMock = mocks.SHOPLIST_MOCK.SERVICE.updateShoplistBody;
       updatedShoplistMock = mocks.SHOPLIST_MOCK.REPOSITORY.update;
+      updateShoplistResponseMock =
+        mocks.SHOPLIST_MOCK.SERVICE.updateShoplistResponse;
     });
     it('should update a shoplist and return data updated', async () => {
       jest
         .spyOn(shoplistRepository, 'update')
         .mockResolvedValue(updatedShoplistMock);
 
-      const result = await shoplistService.update(shoplistUpdateMock);
+      const result = await shoplistService.update(updateShoplistBodyMock);
 
       expect(shoplistRepository.update).toHaveBeenCalledWith({
-        id: shoplistUpdateMock.id,
-        name: shoplistUpdateMock.name,
+        id: updateShoplistBodyMock.id,
+        name: updateShoplistBodyMock.name,
+        items: updateShoplistBodyMock.items,
       });
       expect(result).toEqual({
-        id: updatedShoplistMock.id,
-        name: updatedShoplistMock.name,
+        id: updateShoplistResponseMock.id,
+        name: updateShoplistResponseMock.name,
+        items: updateShoplistResponseMock.items,
       });
     });
 
     it('should throw ErrorException "UPDATE_ENTITY_ERROR" if creation doesnt work', async () => {
       jest.spyOn(shoplistRepository, 'update').mockRejectedValue(new Error());
 
-      await expect(shoplistService.update(shoplistUpdateMock)).rejects.toThrow(
-        new ErrorException(ERRORS.UPDATE_ENTITY_ERROR),
-      );
+      await expect(
+        shoplistService.update(updateShoplistBodyMock),
+      ).rejects.toThrow(new ErrorException(ERRORS.UPDATE_ENTITY_ERROR));
     });
   });
 

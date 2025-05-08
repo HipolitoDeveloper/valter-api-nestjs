@@ -3,6 +3,7 @@ import prisma from '../../../prisma/prisma';
 import { ShoplistRepositoryNamespace } from './shoplist.type';
 import { Prisma } from '.prisma/client';
 import FindAllParams = ShoplistRepositoryNamespace.FindAllParams;
+import UpdateParams = ShoplistRepositoryNamespace.UpdateParams;
 
 @Injectable()
 export class ShoplistRepository {
@@ -12,17 +13,6 @@ export class ShoplistRepository {
       select: {
         id: true,
         name: true,
-      },
-    });
-  }
-
-  update(shoplistData: Prisma.shoplistUpdateInput) {
-    return prisma.shoplist.update({
-      data: {
-        ...shoplistData,
-      },
-      where: {
-        id: shoplistData.id as string,
       },
     });
   }
@@ -55,5 +45,53 @@ export class ShoplistRepository {
       data,
       totalCount: totalCount,
     };
+  }
+
+  async update({ shoplistId, items, name }: UpdateParams) {
+    const data = await prisma.shoplist.update({
+      select: {
+        id: true,
+        name: true,
+        shoplist_items: {
+          select: {
+            id: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            portion_type: true,
+            portion: true,
+          },
+        },
+      },
+      where: {
+        id: shoplistId,
+      },
+      data: {
+        name,
+        shoplist_items: {
+          upsert: items.map((shoplistItem) => ({
+            where: {
+              shoplist_id_product_id: {
+                product_id: shoplistItem.productId,
+                shoplist_id: shoplistId,
+              },
+            },
+            create: {
+              portion: shoplistItem.portion,
+              portion_type: shoplistItem.portionType,
+              product_id: shoplistItem.productId,
+            },
+            update: {
+              portion: shoplistItem.portion,
+              portion_type: shoplistItem.portionType,
+            },
+          })),
+        },
+      },
+    });
+    return data;
   }
 }

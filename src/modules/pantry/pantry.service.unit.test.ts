@@ -85,7 +85,7 @@ describe('PantryService', () => {
     it('should throw ErrorException "CREATE_ENTITY_ERROR" if shoplist creation doesnt work', async () => {
       jest.spyOn(shoplistService, 'create').mockRejectedValue(new Error());
 
-      await expect(shoplistService.create(shoplistCreateMock)).rejects.toThrow(
+      await expect(pantryService.create(shoplistCreateMock)).rejects.toThrow(
         new ErrorException(ERRORS.CREATE_ENTITY_ERROR),
       );
     });
