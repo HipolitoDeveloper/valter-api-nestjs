@@ -4,6 +4,7 @@ import { ShoplistRepositoryNamespace } from './shoplist.type';
 import { Prisma } from '.prisma/client';
 import FindAllParams = ShoplistRepositoryNamespace.FindAllParams;
 import UpdateParams = ShoplistRepositoryNamespace.UpdateParams;
+import TransactionClient = Prisma.TransactionClient;
 
 @Injectable()
 export class ShoplistRepository {
@@ -21,6 +22,18 @@ export class ShoplistRepository {
     return prisma.shoplist.findUnique({
       where: {
         id: shoplistId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }
+
+  findOneByPantryId(pantryId: string) {
+    return prisma.shoplist.findUnique({
+      where: {
+        pantry_id: pantryId,
       },
       select: {
         id: true,
@@ -47,8 +60,13 @@ export class ShoplistRepository {
     };
   }
 
-  async update({ shoplistId, items, name }: UpdateParams) {
-    const data = await prisma.shoplist.update({
+  async update(
+    { shoplistId, inCartItems, removedItems, name }: UpdateParams,
+    prismaTransaction?: TransactionClient,
+  ) {
+    const prismaInstance = prismaTransaction ?? prisma;
+
+    const data = await prismaInstance.shoplist.update({
       select: {
         id: true,
         name: true,
@@ -72,7 +90,12 @@ export class ShoplistRepository {
       data: {
         name,
         shoplist_items: {
-          upsert: items.map((shoplistItem) => ({
+          deleteMany: {
+            id: {
+              in: removedItems,
+            },
+          },
+          upsert: inCartItems.map((shoplistItem) => ({
             where: {
               shoplist_id_product_id: {
                 product_id: shoplistItem.productId,

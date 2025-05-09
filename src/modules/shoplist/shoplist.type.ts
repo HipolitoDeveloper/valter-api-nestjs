@@ -27,11 +27,13 @@ export namespace ShoplistRepositoryNamespace {
 
   export type UpdateParams = {
     shoplistId: string;
-    items: {
+    inCartItems: {
+      id?: string;
       productId?: string;
       portion?: number;
       portionType?: PortionType;
     }[];
+    removedItems: string[];
     name?: string;
   };
 }
@@ -45,6 +47,11 @@ export namespace ShoplistControllerNamespace {
 
   export type ShoplistIdParam = z.infer<typeof shoplistValidator.shoplistId>;
   export type UpdateWithIdBody = z.infer<typeof updateWithIdSchema>;
+
+  export type addItemsToPantryParam = {
+    items: UpdateWithIdBody['items'];
+    pantryId: string;
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

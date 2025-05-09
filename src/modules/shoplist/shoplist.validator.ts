@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { PORTION_TYPE } from './shoplist.enum';
+import { ITEM_STATE, PORTION_TYPE } from './shoplist.enum';
 
 export const PortionTypeSchema = z.nativeEnum(PORTION_TYPE);
+export const ItemSchema = z.nativeEnum(ITEM_STATE);
 
 export const shoplistValidator = {
   create: z.object({
@@ -20,6 +21,7 @@ export const shoplistValidator = {
     items: z
       .array(
         z.object({
+          id: z.string({ message: 'id is required' }).optional(),
           productId: z
             .string({ message: 'id is required' })
             .uuid({ message: 'id is not a valid uuid' }),
@@ -27,6 +29,7 @@ export const shoplistValidator = {
             .number({ message: 'portion is required' })
             .positive({ message: 'portion must be a positive number' }),
           portionType: PortionTypeSchema,
+          state: ItemSchema,
         }),
         { message: 'items is required' },
       )

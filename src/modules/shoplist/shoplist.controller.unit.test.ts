@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SHOPLIST_MOCK } from '../../../test/mocks/shoplist.mock';
+import { USER_MOCK } from '../../../test/mocks/user.mock';
 import { ExceptionHandler } from '../../common/handler/exception.handler';
+import { Request } from '../../common/types/http.type';
 import { ShoplistController } from './shoplist.controller';
 import { ShoplistService } from './shoplist.service';
 import { ShoplistControllerNamespace } from './shoplist.type';
@@ -57,28 +59,32 @@ describe('ShoplistController', () => {
 
   describe('update', () => {
     let updateShoplistBody: UpdateShoplistBody;
-    let shoplistId;
+    let currentUser;
 
     beforeEach(() => {
       updateShoplistBody = SHOPLIST_MOCK.SERVICE.updateShoplistBody;
-      shoplistId = SHOPLIST_MOCK.SERVICE.shoplistId;
+      currentUser = USER_MOCK.currentUser;
     });
     it('should update a shoplist', async () => {
       const result = await shoplistController.update(
-        { id: shoplistId },
         { ...updateShoplistBody },
+        { currentUser: currentUser } as Request,
       );
       expect(result).toEqual(undefined);
-      expect(mockShoplistService.update).toHaveBeenCalledWith({
-        id: shoplistId,
-        ...updateShoplistBody,
-      });
+      expect(mockShoplistService.update).toHaveBeenCalledWith(
+        {
+          ...updateShoplistBody,
+        },
+        currentUser.pantryId,
+      );
     });
 
     it('should throw an error if shoplist creation fails', async () => {
       mockShoplistService.update.mockRejectedValue(new Error('Error'));
       await expect(
-        shoplistController.update(shoplistId, updateShoplistBody),
+        shoplistController.update(updateShoplistBody, {
+          currentUser,
+        } as Request),
       ).rejects.toThrow('Error');
     });
   });

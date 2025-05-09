@@ -1,13 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import prisma from '../../../prisma/prisma';
 import mocks from '../../../test/mocks';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { PantryService } from '../pantry/pantry.service';
+import { ITEM_STATE } from './shoplist.enum';
 import { ShoplistRepository } from './shoplist.repository';
 import { ShoplistService } from './shoplist.service';
+import { Prisma } from '.prisma/client';
 
 describe('ShoplistService', () => {
   let shoplistService: ShoplistService;
   let shoplistRepository: ShoplistRepository;
+  let pantryService: PantryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,6 +25,13 @@ describe('ShoplistService', () => {
             update: jest.fn(),
             findOne: jest.fn(),
             findAll: jest.fn(),
+            findOneByPantryId: jest.fn(),
+          },
+        },
+        {
+          provide: PantryService,
+          useValue: {
+            update: jest.fn(),
           },
         },
       ],
@@ -27,6 +39,7 @@ describe('ShoplistService', () => {
 
     shoplistService = module.get<ShoplistService>(ShoplistService);
     shoplistRepository = module.get<ShoplistRepository>(ShoplistRepository);
+    pantryService = module.get<PantryService>(PantryService);
   });
 
   describe('create', () => {
@@ -69,39 +82,199 @@ describe('ShoplistService', () => {
 
   describe('update', () => {
     let updateShoplistBodyMock;
+    let updateShoplistBodyWithInPantryMock: any;
     let updatedShoplistMock;
     let updateShoplistResponseMock;
+    let pantryIdMock;
+    let findOneByPantryIdMock;
 
     beforeEach(() => {
       updateShoplistBodyMock = mocks.SHOPLIST_MOCK.SERVICE.updateShoplistBody;
+      updateShoplistBodyWithInPantryMock =
+        mocks.SHOPLIST_MOCK.SERVICE.updateShoplistBodyWithInPantryMock;
       updatedShoplistMock = mocks.SHOPLIST_MOCK.REPOSITORY.update;
+      findOneByPantryIdMock = mocks.SHOPLIST_MOCK.REPOSITORY.findOneByPantryId;
       updateShoplistResponseMock =
         mocks.SHOPLIST_MOCK.SERVICE.updateShoplistResponse;
+      pantryIdMock = mocks.SHOPLIST_MOCK.SERVICE.pantryId;
+      jest.resetAllMocks();
     });
-    it('should update a shoplist and return data updated', async () => {
+    describe('Without parameter transaction', () => {
+      it('should update a shoplist and return data updated', async () => {
+        jest
+          .spyOn(prisma, '$transaction')
+          .mockImplementation(async (fn) => fn(prisma));
+
+        jest
+          .spyOn(shoplistRepository, 'update')
+          .mockResolvedValue(updatedShoplistMock);
+        jest
+          .spyOn(shoplistRepository, 'findOneByPantryId')
+          .mockResolvedValue(findOneByPantryIdMock);
+
+        const result = await shoplistService.update(
+          updateShoplistBodyMock,
+          pantryIdMock,
+        );
+
+        expect(shoplistRepository.findOneByPantryId).toHaveBeenCalledWith(
+          pantryIdMock,
+        );
+
+        expect(shoplistRepository.update).toHaveBeenCalledWith(
+          {
+            shoplistId: findOneByPantryIdMock.id,
+            name: updateShoplistBodyMock.name,
+            inCartItems: updateShoplistBodyMock.items,
+            removedItems: [],
+          },
+          prisma,
+        );
+        expect(result).toEqual({
+          id: updateShoplistResponseMock.id,
+          name: updateShoplistResponseMock.name,
+          items: updateShoplistResponseMock.items,
+        });
+      });
+
+      it('should update a shoplist that has IN_PANTRY items and return data updated', async () => {
+        const mockInnerTransaction = {
+          __source: 'inner',
+        } as unknown as Prisma.TransactionClient;
+        jest
+          .spyOn(prisma, '$transaction')
+          .mockImplementation(async (fn) => fn(mockInnerTransaction));
+
+        jest
+          .spyOn(shoplistRepository, 'update')
+          .mockResolvedValue(updatedShoplistMock);
+        jest
+          .spyOn(shoplistRepository, 'findOneByPantryId')
+          .mockResolvedValue(findOneByPantryIdMock);
+
+        jest.spyOn(pantryService, 'update').mockResolvedValue(undefined);
+
+        const result = await shoplistService.update(
+          updateShoplistBodyWithInPantryMock,
+          pantryIdMock,
+        );
+
+        expect(shoplistRepository.update).toHaveBeenCalledWith(
+          {
+            shoplistId: updateShoplistBodyWithInPantryMock.id,
+            inCartItems: updateShoplistBodyWithInPantryMock.items.filter(
+              (item) => item.state === ITEM_STATE.IN_CART,
+            ),
+            removedItems: updateShoplistBodyWithInPantryMock.items
+              .filter((item) => item.state === ITEM_STATE.IN_PANTRY)
+              .map((item) => item.id),
+          },
+          mockInnerTransaction,
+        );
+
+        expect(pantryService.update).toHaveBeenCalledWith(
+          {
+            items: updateShoplistBodyWithInPantryMock.items.filter(
+              (item) => item.state === ITEM_STATE.IN_PANTRY,
+            ),
+          },
+          pantryIdMock,
+          mockInnerTransaction,
+        );
+        expect(result).toEqual({
+          id: updateShoplistResponseMock.id,
+          name: updateShoplistResponseMock.name,
+          items: updateShoplistResponseMock.items,
+        });
+      });
+    });
+
+    describe('With parameter transaction', () => {
+      it('should update a shoplist and return data updated', async () => {
+        const mockInnerTransaction = {
+          __source: 'inner',
+        } as unknown as Prisma.TransactionClient;
+        const mockParameterTransaction = {
+          __source: 'external',
+        } as unknown as Prisma.TransactionClient;
+
+        jest
+          .spyOn(prisma, '$transaction')
+          .mockImplementation(async (fn) => fn(mockInnerTransaction));
+
+        jest
+          .spyOn(prisma, '$transaction')
+          .mockImplementation(async (fn) => fn(prisma));
+
+        jest
+          .spyOn(shoplistRepository, 'update')
+          .mockResolvedValue(updatedShoplistMock);
+        jest
+          .spyOn(shoplistRepository, 'findOneByPantryId')
+          .mockResolvedValue(findOneByPantryIdMock);
+
+        const result = await shoplistService.update(
+          updateShoplistBodyMock,
+          pantryIdMock,
+          mockParameterTransaction,
+        );
+
+        expect(shoplistRepository.findOneByPantryId).toHaveBeenCalledWith(
+          pantryIdMock,
+        );
+
+        expect(shoplistRepository.update).toHaveBeenCalledWith(
+          {
+            shoplistId: findOneByPantryIdMock.id,
+            name: updateShoplistBodyMock.name,
+            inCartItems: updateShoplistBodyMock.items,
+            removedItems: [],
+          },
+          mockParameterTransaction,
+        );
+        expect(result).toEqual({
+          id: updateShoplistResponseMock.id,
+          name: updateShoplistResponseMock.name,
+          items: updateShoplistResponseMock.items,
+        });
+      });
+    });
+
+    it('should throw ErrorException "UPDATE_ENTITY_ERROR" if add items to pantry fails', async () => {
+      const mockInnerTransaction = {
+        __source: 'inner',
+      } as unknown as Prisma.TransactionClient;
       jest
-        .spyOn(shoplistRepository, 'update')
-        .mockResolvedValue(updatedShoplistMock);
+        .spyOn(prisma, '$transaction')
+        .mockImplementation(async (fn) => fn(mockInnerTransaction));
 
-      const result = await shoplistService.update(updateShoplistBodyMock);
+      jest
+        .spyOn(shoplistRepository, 'findOneByPantryId')
+        .mockResolvedValue(findOneByPantryIdMock);
+      jest.spyOn(pantryService, 'update').mockRejectedValue(new Error());
 
-      expect(shoplistRepository.update).toHaveBeenCalledWith({
-        id: updateShoplistBodyMock.id,
-        name: updateShoplistBodyMock.name,
-        items: updateShoplistBodyMock.items,
-      });
-      expect(result).toEqual({
-        id: updateShoplistResponseMock.id,
-        name: updateShoplistResponseMock.name,
-        items: updateShoplistResponseMock.items,
-      });
+      await expect(
+        shoplistService.update(
+          updateShoplistBodyWithInPantryMock,
+          pantryIdMock,
+        ),
+      ).rejects.toThrow(new ErrorException(ERRORS.UPDATE_ENTITY_ERROR));
     });
 
     it('should throw ErrorException "UPDATE_ENTITY_ERROR" if creation doesnt work', async () => {
-      jest.spyOn(shoplistRepository, 'update').mockRejectedValue(new Error());
+      const mockInnerTransaction = {
+        __source: 'inner',
+      } as unknown as Prisma.TransactionClient;
+      jest
+        .spyOn(prisma, '$transaction')
+        .mockImplementation(async (fn) => fn(mockInnerTransaction));
 
+      jest.spyOn(shoplistRepository, 'update').mockRejectedValue(new Error());
+      jest
+        .spyOn(shoplistRepository, 'findOneByPantryId')
+        .mockResolvedValue(findOneByPantryIdMock);
       await expect(
-        shoplistService.update(updateShoplistBodyMock),
+        shoplistService.update(updateShoplistBodyMock, pantryIdMock),
       ).rejects.toThrow(new ErrorException(ERRORS.UPDATE_ENTITY_ERROR));
     });
   });
@@ -172,6 +345,51 @@ describe('ShoplistService', () => {
 
       await expect(shoplistService.findAll(paginationMock)).rejects.toThrow(
         new ErrorException(ERRORS.DATABASE_ERROR),
+      );
+    });
+  });
+
+  describe('findOneByPantry', () => {
+    let pantryIdMock;
+    let shoplistMock;
+
+    beforeEach(() => {
+      pantryIdMock = mocks.SHOPLIST_MOCK.SERVICE.pantryId;
+      shoplistMock = mocks.SHOPLIST_MOCK.REPOSITORY.findOneByPantryId;
+    });
+    it('should findOneByPantryId shoplist', async () => {
+      jest
+        .spyOn(shoplistRepository, 'findOneByPantryId')
+        .mockResolvedValue(shoplistMock);
+
+      const result = await shoplistService.findOneByPantryId(pantryIdMock);
+
+      expect(shoplistRepository.findOneByPantryId).toHaveBeenCalledWith(
+        pantryIdMock,
+      );
+      expect(result).toEqual({
+        id: shoplistMock.id,
+        name: shoplistMock.name,
+      });
+    });
+
+    it('should throw ErrorException "DATABASE_ERROR" if findOne fails', async () => {
+      jest
+        .spyOn(shoplistRepository, 'findOneByPantryId')
+        .mockRejectedValue(new Error());
+
+      await expect(
+        shoplistService.findOneByPantryId(pantryIdMock),
+      ).rejects.toThrow(new ErrorException(ERRORS.DATABASE_ERROR));
+    });
+
+    it('should throw ErrorException "NOT_FOUND_ENTITY" if any shoplist was found', async () => {
+      jest
+        .spyOn(shoplistRepository, 'findOneByPantryId')
+        .mockResolvedValue(undefined);
+
+      await expect(shoplistService.findOne(pantryIdMock)).rejects.toThrow(
+        new ErrorException(ERRORS.NOT_FOUND_ENTITY),
       );
     });
   });

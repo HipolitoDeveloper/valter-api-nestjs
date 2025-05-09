@@ -1,3 +1,5 @@
+import { ITEM_STATE, PORTION_TYPE } from '../../src/modules/shoplist/shoplist.enum';
+
 export const PANTRY_MOCK = {
   SERVICE: {
     createPantryBody: {
@@ -7,6 +9,35 @@ export const PANTRY_MOCK = {
     updatePantryBody: {
       id: 'id',
       name: 'Pantry',
+      items: [
+        {
+          id: 'id',
+          productId: 'productId',
+          portion: 100,
+          portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_PANTRY,
+        },
+      ],
+    },
+
+    updatePantryBodyWithInCartMock: {
+      id: 'id',
+      items: [
+        {
+          id: 'id',
+          productId: 'productId',
+          portion: 100,
+          portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_CART,
+        },
+        {
+          id: 'id',
+          productId: 'productId',
+          portion: 100,
+          portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_PANTRY,
+        },
+      ],
     },
 
     pantryId: 'id',
@@ -30,6 +61,21 @@ export const PANTRY_MOCK = {
       ],
       totalCount: 10,
     },
+
+    updatePantryResponse: {
+      id: 'id',
+      name: 'Pantry name',
+      items: [
+        {
+          id: 'id',
+          name: 'Product name',
+          productId: 'productId',
+          portion: 100,
+          portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_PANTRY,
+        },
+      ],
+    },
   },
   REPOSITORY: {
     create: {
@@ -40,6 +86,17 @@ export const PANTRY_MOCK = {
     update: {
       id: 'id',
       name: 'Pantry name',
+      pantry_items: [
+        {
+          id: 'id',
+          portion: 100,
+          portion_type: PORTION_TYPE.GRAMS,
+          product: {
+            id: 'productId',
+            name: 'Product name',
+          },
+        },
+      ],
     },
 
     findOne: {

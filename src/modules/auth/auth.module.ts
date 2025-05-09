@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BasicStrategy } from '../../common/guards/strategies/basic.strategy';
 import { JwtStrategy } from '../../common/guards/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from '../../common/guards/strategies/jwt-refresh.strategy';
 import { ExceptionHandler } from '../../common/handler/exception.handler';
 import { PantryRepository } from '../pantry/pantry.repository';
 import { PantryService } from '../pantry/pantry.service';
+import { ShoplistModule } from '../shoplist/shoplist.module';
 import { ShoplistRepository } from '../shoplist/shoplist.repository';
 import { ShoplistService } from '../shoplist/shoplist.service';
 import { UserModule } from '../user/user.module';
@@ -33,7 +34,7 @@ import { ConfigService } from '@nestjs/config';
     PantryService,
     PantryRepository,
     ShoplistRepository,
-    ShoplistService
+    ShoplistService,
   ],
   imports: [
     PassportModule,

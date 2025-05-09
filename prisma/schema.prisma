@@ -63,7 +63,7 @@ model pantry {
   users        user[]
   pantry_items pantry_item[]
 
-  shoplist shoplist[]
+  shoplist shoplist?
 }
 
 model pantry_item {
@@ -74,10 +74,12 @@ model pantry_item {
   portion_type PortionType
 
   pantry    pantry @relation(fields: [pantry_id], references: [id])
-  pantry_id String @unique @db.Uuid
+  pantry_id String @db.Uuid
 
   product    product @relation(fields: [product_id], references: [id])
-  product_id String  @unique @db.Uuid
+  product_id String  @db.Uuid
+
+  @@unique([pantry_id, product_id])
 }
 
 model product {

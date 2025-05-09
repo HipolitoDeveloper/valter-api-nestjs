@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PANTRY_MOCK } from '../../../test/mocks/pantry.mock';
+import { USER_MOCK } from '../../../test/mocks/user.mock';
 import { ExceptionHandler } from '../../common/handler/exception.handler';
+import { Request } from '../../common/types/http.type';
 import { PantryController } from './pantry.controller';
 import { PantryService } from './pantry.service';
 import { PantryControllerNamespace } from './pantry.type';
@@ -54,21 +56,30 @@ describe('PantryController', () => {
 
   describe('update', () => {
     let updatePantryBody: CreatePantryBody;
+    let currentUser;
 
     beforeEach(() => {
       updatePantryBody = PANTRY_MOCK.SERVICE.updatePantryBody;
+      currentUser = USER_MOCK.currentUser;
     });
     it('should update a pantry', async () => {
-      const result = await pantryController.update(updatePantryBody);
+      const result = await pantryController.update(updatePantryBody, {
+        currentUser: currentUser,
+      } as Request);
       expect(result).toEqual(undefined);
-      expect(mockPantryService.update).toHaveBeenCalledWith(updatePantryBody);
+      expect(mockPantryService.update).toHaveBeenCalledWith(
+        updatePantryBody,
+        currentUser.pantryId,
+      );
     });
 
     it('should throw an error if pantry creation fails', async () => {
       mockPantryService.update.mockRejectedValue(new Error('Error'));
-      await expect(pantryController.update(updatePantryBody)).rejects.toThrow(
-        'Error',
-      );
+      await expect(
+        pantryController.update(updatePantryBody, {
+          currentUser: currentUser,
+        } as Request),
+      ).rejects.toThrow('Error');
     });
   });
 

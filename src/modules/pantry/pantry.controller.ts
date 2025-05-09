@@ -6,11 +6,15 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../common/guards/auth-jwt.guard';
 import { ACTIONS, RESOURCES } from '../../common/permission/permission.enum';
 import { ZodValidationPipe } from '../../common/pipe/zod-validation.pipe';
+import { Request } from '../../common/types/http.type';
 import { PantryService } from './pantry.service';
 import { PantryControllerNamespace } from './pantry.type';
 import { pantryValidator } from './pantry.validator';
@@ -19,6 +23,7 @@ import UpdatePantryBody = PantryControllerNamespace.UpdatePantryBody;
 import FindAllQuery = PantryControllerNamespace.FindAllQuery;
 import FindOneParam = PantryControllerNamespace.FindOneParam;
 
+@UseGuards(JwtAuthGuard)
 @Controller('pantry')
 export class PantryController {
   constructor(private readonly pantryService: PantryService) {}
@@ -33,8 +38,8 @@ export class PantryController {
   @Put('')
   @Roles(RESOURCES.PANTRY, ACTIONS.UPDATE)
   @UsePipes(new ZodValidationPipe(pantryValidator.update))
-  async update(@Body() pantry: UpdatePantryBody) {
-    return this.pantryService.update(pantry);
+  async update(@Body() pantry: UpdatePantryBody, @Req() req: Request) {
+    return this.pantryService.update(pantry, req.currentUser.pantryId);
   }
 
   @Get('')

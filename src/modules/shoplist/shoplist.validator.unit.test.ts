@@ -144,9 +144,11 @@ describe('ShoplistValidator', () => {
         name: 'Test shoplist',
         items: [
           {
+            id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
             productId: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
             portion: 100,
             portionType: 'GRAMS',
+            state: 'IN_CART',
           },
         ],
       };
@@ -158,8 +160,6 @@ describe('ShoplistValidator', () => {
     });
 
     describe('shoplist name', () => {
-
-
       it('should fail validation if shoplist name is too short', () => {
         shoplistData.name = 'a';
         const invalidData = { ...shoplistData };

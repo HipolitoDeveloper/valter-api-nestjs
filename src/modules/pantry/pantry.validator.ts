@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ItemSchema, PortionTypeSchema } from '../shoplist/shoplist.validator';
 
 export const pantryValidator = {
   create: z.object({
@@ -7,12 +8,25 @@ export const pantryValidator = {
       .min(2, { message: 'name is too short' }),
   }),
   update: z.object({
-    id: z
-      .string({ message: 'id is required' })
-      .uuid({ message: 'id is not a valid uuid' }),
     name: z
       .string({ message: 'name is required' })
-      .min(2, { message: 'name is too short' }),
+      .min(2, { message: 'name is too short' }).optional(),
+    items: z
+      .array(
+        z.object({
+          id: z.string({ message: 'id is required' }).optional(),
+          productId: z
+            .string({ message: 'id is required' })
+            .uuid({ message: 'id is not a valid uuid' }),
+          portion: z
+            .number({ message: 'portion is required' })
+            .positive({ message: 'portion must be a positive number' }),
+          portionType: PortionTypeSchema,
+          state: ItemSchema,
+        }),
+        { message: 'items is required' },
+      )
+      .min(1, { message: 'at least one or more items should be added' }),
   }),
   findOne: z.object({
     id: z

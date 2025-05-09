@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client/extension';
+import prisma from '../../../prisma/prisma';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { PantryService } from '../pantry/pantry.service';
+import { ITEM_STATE } from './shoplist.enum';
 import { ShoplistRepository } from './shoplist.repository';
 import {
   ShoplistControllerNamespace,
@@ -10,11 +14,17 @@ import {
 import Shoplist = ShoplistRepositoryNamespace.Shoplist;
 import CreateShoplistBody = ShoplistControllerNamespace.CreateShoplistBody;
 import FindAllQuery = ShoplistControllerNamespace.FindAllQuery;
-import UpdateWithIdBody = ShoplistControllerNamespace.UpdateWithIdBody;
+import addItemsToPantryParam = ShoplistControllerNamespace.addItemsToPantryParam;
+import UpdateShoplistBody = ShoplistControllerNamespace.UpdateShoplistBody;
+import TransactionClient = Prisma.TransactionClient;
 
 @Injectable()
 export class ShoplistService {
-  constructor(private shoplistRepository: ShoplistRepository) {}
+  constructor(
+    private shoplistRepository: ShoplistRepository,
+    @Inject(forwardRef(() => PantryService))
+    private readonly pantryService: PantryService,
+  ) {}
 
   async create(
     shoplist: CreateShoplistBody,
@@ -59,6 +69,26 @@ export class ShoplistService {
     };
   }
 
+  async findOneByPantryId(
+    pantryId: string,
+  ): Promise<ShoplistServiceNamespace.FindOneResponse> {
+    let shoplist: Shoplist;
+    try {
+      shoplist = await this.shoplistRepository.findOneByPantryId(pantryId);
+    } catch (error) {
+      throw new ErrorException(ERRORS.DATABASE_ERROR, error);
+    }
+
+    if (!shoplist) {
+      throw new ErrorException(ERRORS.NOT_FOUND_ENTITY);
+    }
+
+    return {
+      id: shoplist.id,
+      name: shoplist.name,
+    };
+  }
+
   async findAll({
     limit,
     page,
@@ -80,33 +110,81 @@ export class ShoplistService {
     };
   }
 
-  async update({
-    id,
-    items,
-    name,
-  }: UpdateWithIdBody): Promise<ShoplistServiceNamespace.UpdateResponse> {
-    let shoplist: Shoplist;
+  async addItemsToPantry(
+    { items, pantryId }: addItemsToPantryParam,
+    prismaTransaction: TransactionClient,
+  ) {
+    try {
+      await this.pantryService.update(
+        {
+          items: items,
+        },
+        pantryId,
+        prismaTransaction,
+      );
+    } catch (error) {
+      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
+    }
+  }
+
+  async update(
+    { items, name }: UpdateShoplistBody,
+    pantryId: string,
+    prismaTransaction?: TransactionClient,
+  ): Promise<ShoplistServiceNamespace.UpdateResponse> {
+    const shoplistToUpdate = await this.findOneByPantryId(pantryId);
+    let updatedShoplist: Shoplist;
+
+    const inCartItems = items.filter(
+      (item) => item.state === ITEM_STATE.IN_CART,
+    );
+
+    const purchasedItems = items.filter(
+      (item) => item.state === ITEM_STATE.IN_PANTRY,
+    );
+
+    const removedItems = [
+      ...items.filter((item) => item.state === ITEM_STATE.REMOVED),
+      ...purchasedItems,
+    ].map((item) => item.id);
 
     try {
-      shoplist = await this.shoplistRepository.update({
-        shoplistId: id,
-        items,
-        name,
+      await prisma.$transaction(async (prisma) => {
+        updatedShoplist = await this.shoplistRepository.update(
+          {
+            shoplistId: shoplistToUpdate.id,
+            inCartItems,
+            removedItems,
+            name,
+          },
+          prismaTransaction || prisma,
+        );
+
+        if (purchasedItems.length > 0 && pantryId) {
+          await this.addItemsToPantry(
+            {
+              items: purchasedItems,
+              pantryId,
+            },
+            prismaTransaction || prisma,
+          );
+        }
       });
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
     }
 
     return {
-      id: shoplist.id,
-      name: shoplist.name,
-      items: shoplist.shoplist_items.map((shoplistItem) => {
+      id: updatedShoplist.id,
+      name: updatedShoplist.name,
+      items: updatedShoplist.shoplist_items.map((shoplistItem) => {
         return {
           id: shoplistItem.id,
           name: shoplistItem.product.name,
           portion: shoplistItem.portion,
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
+          state: ITEM_STATE.IN_CART,
         };
       }),
     };

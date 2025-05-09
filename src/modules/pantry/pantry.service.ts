@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client/extension';
+import prisma from '../../../prisma/prisma';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { ITEM_STATE } from '../shoplist/shoplist.enum';
 import { ShoplistService } from '../shoplist/shoplist.service';
 import { PantryRepository } from './pantry.repository';
 import {
@@ -12,11 +15,14 @@ import CreatePantryBody = PantryControllerNamespace.CreatePantryBody;
 import Pantry = PantryRepositoryNamespace.Pantry;
 import UpdatePantryBody = PantryControllerNamespace.UpdatePantryBody;
 import FindAllQuery = PantryControllerNamespace.FindAllQuery;
+import addItemsToShoplistParam = PantryControllerNamespace.addItemsToShoplistParam;
+import TransactionClient = Prisma.TransactionClient;
 
 @Injectable()
 export class PantryService {
   constructor(
     private pantryRepository: PantryRepository,
+    @Inject(forwardRef(() => ShoplistService))
     private shoplistService: ShoplistService,
   ) {}
 
@@ -47,12 +53,62 @@ export class PantryService {
     };
   }
 
+  async addItemsToShoplist(
+    { items, pantryId }: addItemsToShoplistParam,
+    prismaTransaction?: TransactionClient,
+  ) {
+    try {
+      await this.shoplistService.update(
+        {
+          items: items,
+        },
+        pantryId,
+        prismaTransaction,
+      );
+    } catch (error) {
+      throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
+    }
+  }
+
   async update(
-    pantry: UpdatePantryBody,
+    { items, name }: UpdatePantryBody,
+    id: string,
+    prismaTransaction?: TransactionClient,
   ): Promise<PantryServiceNamespace.UpdateResponse> {
     let updatedPantry: Pantry;
+
+    const inPantryItems = items.filter(
+      (item) => item.state === ITEM_STATE.IN_PANTRY,
+    );
+
+    const inCartItems = items.filter(
+      (item) => item.state === ITEM_STATE.IN_CART,
+    );
+
+    const removedItems = [
+      ...items.filter((item) => item.state === ITEM_STATE.REMOVED),
+      ...inCartItems,
+    ].map((item) => item.id);
+
     try {
-      updatedPantry = await this.pantryRepository.update(pantry);
+      await prisma.$transaction(async (prisma) => {
+        updatedPantry = await this.pantryRepository.update(
+          {
+            id,
+            inPantryItems,
+            removedItems,
+            name,
+          },
+          prismaTransaction || prisma,
+        );
+
+        if (inCartItems.length > 0) {
+          await this.addItemsToShoplist(
+            { items: inCartItems, pantryId: id },
+            prismaTransaction || prisma,
+          );
+        }
+      });
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
     }
@@ -60,6 +116,16 @@ export class PantryService {
     return {
       id: updatedPantry.id,
       name: updatedPantry.name,
+      items: updatedPantry.pantry_items.map((pantryItem) => {
+        return {
+          id: pantryItem.id,
+          name: pantryItem.product.name,
+          portion: pantryItem.portion,
+          portionType: pantryItem.portion_type,
+          productId: pantryItem.product.id,
+          state: ITEM_STATE.IN_PANTRY,
+        };
+      }),
     };
   }
 

@@ -1,17 +1,13 @@
-import { Module } from '@nestjs/common';
-import { ShoplistRepository } from '../shoplist/shoplist.repository';
-import { ShoplistService } from '../shoplist/shoplist.service';
+import { forwardRef, Module } from '@nestjs/common';
+import { ShoplistModule } from '../shoplist/shoplist.module';
+import { PantryController } from './pantry.controller';
 import { PantryRepository } from './pantry.repository';
 import { PantryService } from './pantry.service';
-import { PantryController } from './pantry.controller';
 
 @Module({
+  imports: [forwardRef(() => ShoplistModule)],
   controllers: [PantryController],
-  providers: [
-    PantryService,
-    PantryRepository,
-    ShoplistService,
-    ShoplistRepository,
-  ],
+  providers: [PantryService, PantryRepository],
+  exports: [PantryService],
 })
 export class PantryModule {}

@@ -75,6 +75,15 @@ describe('pantryValidator', () => {
       pantryData = {
         id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
         name: 'Test Pantry',
+        items: [
+          {
+            id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+            productId: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+            portion: 1,
+            portionType: 'GRAMS',
+            state: 'IN_PANTRY',
+          },
+        ],
       };
     });
 
@@ -84,32 +93,6 @@ describe('pantryValidator', () => {
     });
 
     describe('pantry name', () => {
-      it('should fail validation if pantry name is missing', () => {
-        delete pantryData.name;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
-
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          const error = result.error;
-          expect(error.issues[0].path).toContain('name');
-          expect(error.issues[0].message).toBe('name is required');
-        }
-      });
-
-      it('should fail validation if pantry name is empty', () => {
-        pantryData.name = undefined;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
-
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          const error = result.error;
-          expect(error.issues[0].path).toContain('name');
-          expect(error.issues[0].message).toBe('name is required');
-        }
-      });
-
       it('should fail validation if pantry name is too short', () => {
         pantryData.name = 'a';
         const invalidData = { ...pantryData };
@@ -137,59 +120,6 @@ describe('pantryValidator', () => {
       });
     });
 
-    describe('pantry id', () => {
-      it('should fail validation if pantry id is missing', () => {
-        delete pantryData.id;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
-
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          const error = result.error;
-          expect(error.issues[0].path).toContain('id');
-          expect(error.issues[0].message).toBe('id is required');
-        }
-      });
-
-      it('should fail validation if pantry id is empty', () => {
-        pantryData.id = undefined;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
-
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          const error = result.error;
-          expect(error.issues[0].path).toContain('id');
-          expect(error.issues[0].message).toBe('id is required');
-        }
-      });
-
-      it('should fail validation if pantry id is not a string', () => {
-        pantryData.id = 1;
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
-
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          const error = result.error;
-          expect(error.issues[0].path).toContain('id');
-          expect(error.issues[0].message).toBe('id is required');
-        }
-      });
-
-      it('should fail validation if pantry id is not a valid uuid', () => {
-        pantryData.id = '12312312wsss';
-        const invalidData = { ...pantryData };
-        const result: any = pantryValidator.update.safeParse(invalidData);
-
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          const error = result.error;
-          expect(error.issues[0].path).toContain('id');
-          expect(error.issues[0].message).toBe('id is not a valid uuid');
-        }
-      });
-    });
   });
 
   describe('findOne', () => {
@@ -303,7 +233,6 @@ describe('pantryValidator', () => {
         }
       });
 
-
       it('should fail validation if page has a value less than 1', () => {
         params.page = 0;
         const invalidData = { ...params };
@@ -313,9 +242,7 @@ describe('pantryValidator', () => {
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('page');
-          expect(error.issues[0].message).toBe(
-            'page must be ≥1',
-          );
+          expect(error.issues[0].message).toBe('page must be ≥1');
         }
       });
     });
@@ -356,9 +283,7 @@ describe('pantryValidator', () => {
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('limit');
-          expect(error.issues[0].message).toBe(
-            'limit must be ≥0',
-          );
+          expect(error.issues[0].message).toBe('limit must be ≥0');
         }
       });
     });

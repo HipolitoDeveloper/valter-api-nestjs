@@ -6,11 +6,15 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../common/guards/auth-jwt.guard';
 import { ACTIONS, RESOURCES } from '../../common/permission/permission.enum';
 import { ZodValidationPipe } from '../../common/pipe/zod-validation.pipe';
+import { Request } from '../../common/types/http.type';
 import { ShoplistService } from './shoplist.service';
 import { ShoplistControllerNamespace } from './shoplist.type';
 import { shoplistValidator } from './shoplist.validator';
@@ -18,8 +22,8 @@ import CreateShoplistBody = ShoplistControllerNamespace.CreateShoplistBody;
 import UpdateShoplistBody = ShoplistControllerNamespace.UpdateShoplistBody;
 import FindAllQuery = ShoplistControllerNamespace.FindAllQuery;
 import FindOneParam = ShoplistControllerNamespace.FindOneParam;
-import ShoplistIdParam = ShoplistControllerNamespace.ShoplistIdParam;
 
+@UseGuards(JwtAuthGuard)
 @Controller('shoplist')
 export class ShoplistController {
   constructor(private readonly shoplistService: ShoplistService) {}
@@ -50,14 +54,16 @@ export class ShoplistController {
     return this.shoplistService.findOne(id);
   }
 
-  @Put(':id')
+  @Put()
   @Roles(RESOURCES.SHOPLIST, ACTIONS.UPDATE)
   async update(
-    @Param(new ZodValidationPipe(shoplistValidator.shoplistId))
-    { id }: ShoplistIdParam,
     @Body(new ZodValidationPipe(shoplistValidator.update))
     { items, name }: UpdateShoplistBody,
+    @Req() req: Request,
   ) {
-    return this.shoplistService.update({ id, items, name });
+    return this.shoplistService.update(
+      { items, name },
+      req.currentUser.pantryId,
+    );
   }
 }

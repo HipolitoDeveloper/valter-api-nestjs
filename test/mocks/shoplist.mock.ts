@@ -1,4 +1,7 @@
-import { PORTION_TYPE } from '../../src/modules/shoplist/shoplist.enum';
+import {
+  ITEM_STATE,
+  PORTION_TYPE,
+} from '../../src/modules/shoplist/shoplist.enum';
 
 export const SHOPLIST_MOCK = {
   SERVICE: {
@@ -11,14 +14,37 @@ export const SHOPLIST_MOCK = {
       name: 'Shoplist',
       items: [
         {
+          id: 'id',
           productId: 'productId',
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_CART,
+        },
+      ],
+    },
+
+    updateShoplistBodyWithInPantryMock: {
+      id: 'id',
+      items: [
+        {
+          id: 'id',
+          productId: 'productId',
+          portion: 100,
+          portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_PANTRY,
+        },
+        {
+          id: 'id',
+          productId: 'productId',
+          portion: 100,
+          portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_CART,
         },
       ],
     },
 
     shoplistId: 'id',
+    pantryId: 'id',
 
     pagination: {
       limit: 10,
@@ -40,6 +66,7 @@ export const SHOPLIST_MOCK = {
           productId: 'productId',
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
+          state: ITEM_STATE.IN_CART,
         },
       ],
     },
@@ -77,6 +104,11 @@ export const SHOPLIST_MOCK = {
     },
 
     findOne: {
+      id: 'id',
+      name: 'Shoplist name',
+    },
+
+    findOneByPantryId: {
       id: 'id',
       name: 'Shoplist name',
     },
