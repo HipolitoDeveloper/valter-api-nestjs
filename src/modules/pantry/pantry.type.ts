@@ -32,6 +32,7 @@ export namespace PantryRepositoryNamespace {
       productId?: string;
       portion?: number;
       portionType?: PortionType;
+      validUntil?: string;
     }[];
     removedItems: string[];
     name?: string;

@@ -64,10 +64,12 @@ export class PantryRepository {
               portion: pantryItem.portion,
               portion_type: pantryItem.portionType,
               product_id: pantryItem.productId,
+              valid_until: pantryItem.validUntil,
             },
             update: {
               portion: pantryItem.portion,
               portion_type: pantryItem.portionType,
+              valid_until: pantryItem.validUntil,
             },
           })),
         },

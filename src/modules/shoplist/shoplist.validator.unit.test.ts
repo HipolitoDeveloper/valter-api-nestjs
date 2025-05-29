@@ -1,3 +1,4 @@
+import { pantryValidator } from '../pantry/pantry.validator';
 import { shoplistValidator } from './shoplist.validator';
 
 describe('ShoplistValidator', () => {
@@ -224,6 +225,19 @@ describe('ShoplistValidator', () => {
           expect(error.issues[0].message).toBe('items is required');
         }
       });
+
+      it('should fail validation if valid until is not a date', () => {
+        shoplistData.items[0].validUntil = 1;
+        const invalidData = { ...shoplistData };
+        const result: any = pantryValidator.update.safeParse(invalidData);
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          const error = result.error;
+          expect(error.issues[0].path).toContain('validUntil');
+          expect(error.issues[0].message).toBe('validUntil is required');
+        }
+      });
     });
   });
 
@@ -388,9 +402,7 @@ describe('ShoplistValidator', () => {
         if (!result.success) {
           const error = result.error;
           expect(error.issues[0].path).toContain('limit');
-          expect(error.issues[0].message).toBe(
-            'limit must be ≥0',
-          );
+          expect(error.issues[0].message).toBe('limit must be ≥0');
         }
       });
     });

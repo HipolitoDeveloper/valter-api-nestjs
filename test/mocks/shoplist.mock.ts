@@ -19,6 +19,7 @@ export const SHOPLIST_MOCK = {
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
           state: ITEM_STATE.IN_CART,
+          validUntil: '2023-10-01T00:00:00.000Z',
         },
       ],
     },

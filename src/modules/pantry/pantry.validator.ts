@@ -10,7 +10,8 @@ export const pantryValidator = {
   update: z.object({
     name: z
       .string({ message: 'name is required' })
-      .min(2, { message: 'name is too short' }).optional(),
+      .min(2, { message: 'name is too short' })
+      .optional(),
     items: z
       .array(
         z.object({
@@ -23,6 +24,12 @@ export const pantryValidator = {
             .positive({ message: 'portion must be a positive number' }),
           portionType: PortionTypeSchema,
           state: ItemSchema,
+          validUntil: z
+            .string({ message: 'validUntil is required' })
+            .refine((val) => !Number.isNaN(Date.parse(val)), {
+              message: 'validUntil is not a valid date',
+            })
+            .optional(),
         }),
         { message: 'items is required' },
       )

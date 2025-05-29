@@ -82,7 +82,7 @@ describe('ProductValidator', () => {
       }
     });
 
-    it('should fail validation ifvalid until is empty', () => {
+    it('should fail validation if valid until is empty', () => {
       productData.validUntil = undefined;
       const invalidData = { ...productData };
       const result: any = productValidator.create.safeParse(invalidData);
