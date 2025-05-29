@@ -31,7 +31,7 @@ export const SHOPLIST_MOCK = {
           productId: 'productId',
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
-          state: ITEM_STATE.IN_PANTRY,
+          state: ITEM_STATE.PURCHASED,
         },
         {
           id: 'id',

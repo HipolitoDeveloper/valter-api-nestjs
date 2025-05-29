@@ -51,6 +51,7 @@ describe('ProductService', () => {
             id: productCreateMock.categoryId,
           },
         },
+        valid_until: productCreateMock.validUntil,
       });
       expect(result).toEqual({
         id: createdProductMock.id,

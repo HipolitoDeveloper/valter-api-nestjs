@@ -40,6 +40,7 @@ export const PRODUCT_MOCK = {
     create: {
       id: 'id',
       name: 'Product name',
+      validUntil: new Date('2023-10-01T00:00:00.000Z'),
     },
 
     update: {

@@ -28,6 +28,7 @@ export class ProductService {
             id: product.categoryId,
           },
         },
+        valid_until: new Date(product.validUntil),
       });
     } catch (error) {
       throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR, error);

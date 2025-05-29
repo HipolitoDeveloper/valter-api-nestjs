@@ -166,7 +166,7 @@ describe('ShoplistService', () => {
               (item) => item.state === ITEM_STATE.IN_CART,
             ),
             removedItems: updateShoplistBodyWithInPantryMock.items
-              .filter((item) => item.state === ITEM_STATE.IN_PANTRY)
+              .filter((item) => item.state === ITEM_STATE.PURCHASED)
               .map((item) => item.id),
           },
           mockInnerTransaction,
@@ -175,7 +175,7 @@ describe('ShoplistService', () => {
         expect(pantryService.update).toHaveBeenCalledWith(
           {
             items: updateShoplistBodyWithInPantryMock.items.filter(
-              (item) => item.state === ITEM_STATE.IN_PANTRY,
+              (item) => item.state === ITEM_STATE.PURCHASED,
             ),
           },
           pantryIdMock,

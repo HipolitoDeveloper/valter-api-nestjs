@@ -52,6 +52,8 @@ model user {
 
   profile    profile @relation(fields: [profile_id], references: [id])
   profile_id String  @unique @db.Uuid
+
+  item_transaction item_transaction[]
 }
 
 model pantry {
@@ -72,6 +74,7 @@ model pantry_item {
   updated_at   DateTime    @updatedAt
   portion      Float
   portion_type PortionType
+  valid_until  DateTime?
 
   pantry    pantry @relation(fields: [pantry_id], references: [id])
   pantry_id String @db.Uuid
@@ -89,9 +92,11 @@ model product {
   name         String        @unique @db.VarChar(255)
   pantry_items pantry_item[]
 
-  category      category        @relation(fields: [category_id], references: [id])
-  category_id   String          @db.Uuid
-  shoplist_item shoplist_item[]
+  category         category           @relation(fields: [category_id], references: [id])
+  category_id      String             @db.Uuid
+  valid_until      DateTime
+  shoplist_item    shoplist_item[]
+  item_transaction item_transaction[]
 }
 
 model category {
@@ -129,6 +134,24 @@ model shoplist_item {
   product_id String  @db.Uuid
 
   @@unique([shoplist_id, product_id])
+}
+
+model item_transaction {
+  id           String      @id @default(uuid()) @db.Uuid
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  portion      Float
+  portion_type PortionType
+
+  state            ItemState
+  valid_until      DateTime
+  transaction_code String    @db.Uuid @default(uuid())
+
+  user    user   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  product    product @relation(fields: [product_id], references: [id])
+  product_id String  @db.Uuid
 }
 
 model profile {
@@ -176,4 +199,11 @@ enum PortionType {
   GRAMS
   UNITS
   LITERS
+}
+
+enum ItemState {
+  IN_CART
+  REMOVED
+  IN_PANTRY
+  PURCHASED
 }

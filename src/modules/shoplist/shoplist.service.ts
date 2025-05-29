@@ -140,7 +140,7 @@ export class ShoplistService {
     );
 
     const purchasedItems = items.filter(
-      (item) => item.state === ITEM_STATE.IN_PANTRY,
+      (item) => item.state === ITEM_STATE.PURCHASED,
     );
 
     const removedItems = [
