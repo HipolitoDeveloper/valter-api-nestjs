@@ -39,7 +39,12 @@ export class PantryController {
   @Roles(RESOURCES.PANTRY, ACTIONS.UPDATE)
   @UsePipes(new ZodValidationPipe(pantryValidator.update))
   async update(@Body() pantry: UpdatePantryBody, @Req() req: Request) {
-    return this.pantryService.update(pantry, req.currentUser.pantryId);
+    return this.pantryService.update(
+      pantry,
+      req.currentUser.pantryId,
+      undefined,
+      req.currentUser.id,
+    );
   }
 
   @Get('')

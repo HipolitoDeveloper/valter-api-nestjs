@@ -3,6 +3,7 @@ export const PRODUCT_MOCK = {
     createProductBody: {
       name: 'Product Name',
       categoryId: 'id',
+      validUntil: '2023-10-01T00:00:00.000Z',
     },
 
     updateProductBody: {

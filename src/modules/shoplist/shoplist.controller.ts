@@ -64,6 +64,8 @@ export class ShoplistController {
     return this.shoplistService.update(
       { items, name },
       req.currentUser.pantryId,
+      undefined, // Assuming no transaction is passed here
+      req.currentUser.id,
     );
   }
 }

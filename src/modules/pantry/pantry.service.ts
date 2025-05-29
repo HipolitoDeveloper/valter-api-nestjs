@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client/extension';
 import prisma from '../../../prisma/prisma';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { ItemTransactionService } from '../item-transaction/item-transaction.service';
 import { ITEM_STATE } from '../shoplist/shoplist.enum';
 import { ShoplistService } from '../shoplist/shoplist.service';
 import { PantryRepository } from './pantry.repository';
@@ -24,6 +25,7 @@ export class PantryService {
     private pantryRepository: PantryRepository,
     @Inject(forwardRef(() => ShoplistService))
     private shoplistService: ShoplistService,
+    private readonly itemTransactionService: ItemTransactionService,
   ) {}
 
   async create(
@@ -74,11 +76,14 @@ export class PantryService {
     { items, name }: UpdatePantryBody,
     id: string,
     prismaTransaction?: TransactionClient,
+    userId?: string
   ): Promise<PantryServiceNamespace.UpdateResponse> {
     let updatedPantry: Pantry;
 
     const inPantryItems = items.filter(
-      (item) => item.state === ITEM_STATE.IN_PANTRY || item.state === ITEM_STATE.PURCHASED,
+      (item) =>
+        item.state === ITEM_STATE.IN_PANTRY ||
+        item.state === ITEM_STATE.PURCHASED,
     );
 
     const inCartItems = items.filter(
@@ -108,6 +113,11 @@ export class PantryService {
             prismaTransaction || prisma,
           );
         }
+
+        await this.itemTransactionService.create(
+          { items, userId },
+          prismaTransaction || prisma,
+        );
       });
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);

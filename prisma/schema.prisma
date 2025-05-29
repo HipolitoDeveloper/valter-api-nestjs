@@ -144,7 +144,7 @@ model item_transaction {
   portion_type PortionType
 
   state            ItemState
-  valid_until      DateTime
+  valid_until      DateTime?
   transaction_code String    @db.Uuid @default(uuid())
 
   user    user   @relation(fields: [user_id], references: [id])

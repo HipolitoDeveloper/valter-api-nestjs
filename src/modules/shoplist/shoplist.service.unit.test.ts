@@ -3,6 +3,7 @@ import prisma from '../../../prisma/prisma';
 import mocks from '../../../test/mocks';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { ItemTransactionService } from '../item-transaction/item-transaction.service';
 import { PantryService } from '../pantry/pantry.service';
 import { ITEM_STATE } from './shoplist.enum';
 import { ShoplistRepository } from './shoplist.repository';
@@ -13,6 +14,7 @@ describe('ShoplistService', () => {
   let shoplistService: ShoplistService;
   let shoplistRepository: ShoplistRepository;
   let pantryService: PantryService;
+  let itemTransactionService: ItemTransactionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,12 +36,21 @@ describe('ShoplistService', () => {
             update: jest.fn(),
           },
         },
+        {
+          provide: ItemTransactionService,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     shoplistService = module.get<ShoplistService>(ShoplistService);
     shoplistRepository = module.get<ShoplistRepository>(ShoplistRepository);
     pantryService = module.get<PantryService>(PantryService);
+    itemTransactionService = module.get<ItemTransactionService>(
+      ItemTransactionService,
+    );
   });
 
   describe('create', () => {
@@ -130,6 +141,14 @@ describe('ShoplistService', () => {
           },
           prisma,
         );
+
+        expect(itemTransactionService.create).toHaveBeenCalledWith(
+          {
+            items: updateShoplistBodyMock.items,
+            userId: undefined,
+          },
+          prisma,
+        );
         expect(result).toEqual({
           id: updateShoplistResponseMock.id,
           name: updateShoplistResponseMock.name,
@@ -179,6 +198,14 @@ describe('ShoplistService', () => {
             ),
           },
           pantryIdMock,
+          mockInnerTransaction,
+        );
+
+        expect(itemTransactionService.create).toHaveBeenCalledWith(
+          {
+            items: updateShoplistBodyWithInPantryMock.items,
+            userId: undefined,
+          },
           mockInnerTransaction,
         );
         expect(result).toEqual({
@@ -232,6 +259,15 @@ describe('ShoplistService', () => {
           },
           mockParameterTransaction,
         );
+
+        expect(itemTransactionService.create).toHaveBeenCalledWith(
+          {
+            items: updateShoplistBodyMock.items,
+            userId: undefined,
+          },
+          mockParameterTransaction,
+        );
+
         expect(result).toEqual({
           id: updateShoplistResponseMock.id,
           name: updateShoplistResponseMock.name,

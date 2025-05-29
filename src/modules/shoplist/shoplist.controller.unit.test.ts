@@ -76,6 +76,8 @@ describe('ShoplistController', () => {
           ...updateShoplistBody,
         },
         currentUser.pantryId,
+        undefined,
+        currentUser.id,
       );
     });
 

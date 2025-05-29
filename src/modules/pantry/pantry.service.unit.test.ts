@@ -3,6 +3,7 @@ import prisma from '../../../prisma/prisma';
 import mocks from '../../../test/mocks';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { ItemTransactionService } from '../item-transaction/item-transaction.service';
 import { ITEM_STATE } from '../shoplist/shoplist.enum';
 import { ShoplistService } from '../shoplist/shoplist.service';
 import { PantryRepository } from './pantry.repository';
@@ -14,6 +15,7 @@ describe('PantryService', () => {
   let pantryRepository: PantryRepository;
 
   let shoplistService: ShoplistService;
+  let itemTransactionService: ItemTransactionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,6 +37,12 @@ describe('PantryService', () => {
             update: jest.fn(),
           },
         },
+        {
+          provide: ItemTransactionService,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -42,7 +50,9 @@ describe('PantryService', () => {
     pantryRepository = module.get<PantryRepository>(PantryRepository);
 
     shoplistService = module.get<ShoplistService>(ShoplistService);
-
+    itemTransactionService = module.get<ItemTransactionService>(
+      ItemTransactionService,
+    );
     jest.resetAllMocks();
   });
 
@@ -139,6 +149,14 @@ describe('PantryService', () => {
           },
           prisma,
         );
+
+        expect(itemTransactionService.create).toHaveBeenCalledWith(
+          {
+            items: pantryUpdateMock.items,
+            userId: undefined,
+          },
+          prisma,
+        );
         expect(result).toEqual({
           id: updatePantryResponseMock.id,
           name: updatePantryResponseMock.name,
@@ -186,6 +204,14 @@ describe('PantryService', () => {
           },
           mockInnerTransaction,
         );
+
+        expect(itemTransactionService.create).toHaveBeenCalledWith(
+          {
+            items: updatePantryBodyWithInCartMock.items,
+            userId: undefined,
+          },
+          mockInnerTransaction,
+        );
         expect(result).toEqual({
           id: updatePantryResponseMock.id,
           name: updatePantryResponseMock.name,
@@ -224,6 +250,15 @@ describe('PantryService', () => {
             name: pantryUpdateMock.name,
             inPantryItems: pantryUpdateMock.items,
             removedItems: [],
+          },
+          mockParameterTransaction,
+        );
+
+
+        expect(itemTransactionService.create).toHaveBeenCalledWith(
+          {
+            items: pantryUpdateMock.items,
+            userId: undefined,
           },
           mockParameterTransaction,
         );

@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client/extension';
 import prisma from '../../../prisma/prisma';
 import { ERRORS } from '../../common/enum';
 import { ErrorException } from '../../common/exceptions/error.exception';
+import { ItemTransactionService } from '../item-transaction/item-transaction.service';
 import { PantryService } from '../pantry/pantry.service';
 import { ITEM_STATE } from './shoplist.enum';
 import { ShoplistRepository } from './shoplist.repository';
@@ -24,6 +25,7 @@ export class ShoplistService {
     private shoplistRepository: ShoplistRepository,
     @Inject(forwardRef(() => PantryService))
     private readonly pantryService: PantryService,
+    private readonly itemTransactionService: ItemTransactionService,
   ) {}
 
   async create(
@@ -131,6 +133,7 @@ export class ShoplistService {
     { items, name }: UpdateShoplistBody,
     pantryId: string,
     prismaTransaction?: TransactionClient,
+    userId?: string,
   ): Promise<ShoplistServiceNamespace.UpdateResponse> {
     const shoplistToUpdate = await this.findOneByPantryId(pantryId);
     let updatedShoplist: Shoplist;
@@ -169,6 +172,11 @@ export class ShoplistService {
             prismaTransaction || prisma,
           );
         }
+
+        await this.itemTransactionService.create(
+          { items, userId },
+          prismaTransaction || prisma,
+        );
       });
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);

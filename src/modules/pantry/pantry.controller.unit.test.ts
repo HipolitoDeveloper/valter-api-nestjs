@@ -70,6 +70,8 @@ describe('PantryController', () => {
       expect(mockPantryService.update).toHaveBeenCalledWith(
         updatePantryBody,
         currentUser.pantryId,
+        undefined,
+        currentUser.id
       );
     });
 
