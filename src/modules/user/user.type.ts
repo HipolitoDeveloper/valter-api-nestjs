@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Resources } from '../../common/permission/permission.type';
 import { userValidator } from './user.validator';
 import { Prisma } from '.prisma/client';
 
@@ -19,6 +20,17 @@ export namespace UserRepositoryNamespace {
       name: string;
     };
     password?: string;
+    profile?: {
+      profile_actions?: {
+        action?: {
+          name?: string;
+          resource?: {
+            name?: string;
+          };
+        };
+      }[];
+    };
+    resources?: Resources;
   };
 }
 
@@ -57,6 +69,7 @@ export namespace UserServiceNamespace {
     pantry?: {
       name: string;
     };
+    resources: Resources;
   };
 
   export type FindOneByEmailResponse = {

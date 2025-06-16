@@ -67,11 +67,29 @@ export class UserRepository {
             name: true,
           },
         },
+        profile: {
+          select: {
+            profile_actions: {
+              select: {
+                action: {
+                  select: {
+                    name: true,
+                    resource: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       where: {
         id: userId,
       },
-    });
+    }) as unknown as User;
   }
 
   async findByEmail(email: string) {

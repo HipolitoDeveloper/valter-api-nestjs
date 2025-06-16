@@ -19,7 +19,6 @@ export const USER_MOCK = {
       },
     },
     profile: 'Administrator',
-
   },
   SERVICE: {
     userMock: {
@@ -81,6 +80,18 @@ export const USER_MOCK = {
       pantry: {
         id: 'id',
         name: 'Pantry name',
+      },
+      profile: {
+        profile_actions: [
+          {
+            action: {
+              name: 'create',
+              resource: {
+                name: 'resource name',
+              },
+            },
+          },
+        ],
       },
     },
     findByEmail: {

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { actionResourceGrouper } from '../../helper/action-resource.grouper';
 import { UserRepository } from './user.repository';
 import {} from './user.validator';
 import { hash } from '../../helper/hash.handler';
@@ -117,6 +118,12 @@ export class UserService {
       pantry: {
         name: user.pantry.name,
       },
+      resources: actionResourceGrouper(
+        user.profile.profile_actions?.map(({ action }) => ({
+          action: action.name,
+          resource: action.resource.name,
+        })),
+      ),
     };
   }
 

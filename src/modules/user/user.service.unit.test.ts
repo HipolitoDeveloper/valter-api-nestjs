@@ -189,6 +189,11 @@ describe('UserService', () => {
         pantry: {
           name: userFindByIdMock.pantry.name,
         },
+        resources: {
+          'resource name': {
+            create: true,
+          },
+        },
       });
     });
 
