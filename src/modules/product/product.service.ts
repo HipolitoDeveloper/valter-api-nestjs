@@ -105,6 +105,9 @@ export class ProductService {
           id: product.category.id,
           name: product.category.name,
         },
+        defaultPortion: product.default_portion,
+        defaultPortionType: product.default_portion_type,
+        validUntil: product.valid_until,
       })),
       totalCount: products.totalCount,
     };

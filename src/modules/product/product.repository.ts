@@ -12,6 +12,9 @@ export class ProductRepository {
       select: {
         id: true,
         name: true,
+        default_portion_type: true,
+        valid_until: true,
+        default_portion: true,
       },
     });
   }
@@ -35,6 +38,9 @@ export class ProductRepository {
       select: {
         id: true,
         name: true,
+        default_portion_type: true,
+        valid_until: true,
+        default_portion: true,
         category: {
           select: {
             id: true,
@@ -62,6 +68,9 @@ export class ProductRepository {
       select: {
         id: true,
         name: true,
+        default_portion_type: true,
+        valid_until: true,
+        default_portion: true,
         category: {
           select: {
             id: true,

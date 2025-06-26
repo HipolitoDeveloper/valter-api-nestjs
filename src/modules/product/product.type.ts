@@ -4,7 +4,10 @@ import { Prisma } from '.prisma/client';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ProductRepositoryNamespace {
-  export type Product = Pick<Prisma.ProductGroupByOutputType, 'name' | 'id'> & {
+  export type Product = Pick<
+    Prisma.ProductGroupByOutputType,
+    'name' | 'id' | 'default_portion_type' | 'default_portion' | 'valid_until'
+  > & {
     category?: {
       id: string;
       name: string;

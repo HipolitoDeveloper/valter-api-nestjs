@@ -86,11 +86,13 @@ model pantry_item {
 }
 
 model product {
-  id           String        @id @default(uuid()) @db.Uuid
-  created_at   DateTime      @default(now())
-  updated_at   DateTime      @updatedAt
-  name         String        @unique @db.VarChar(255)
-  pantry_items pantry_item[]
+  id                   String        @id @default(uuid()) @db.Uuid
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @updatedAt
+  name                 String        @unique @db.VarChar(255)
+  pantry_items         pantry_item[]
+  default_portion      Float?
+  default_portion_type PortionType?
 
   category         category           @relation(fields: [category_id], references: [id])
   category_id      String             @db.Uuid
@@ -145,7 +147,7 @@ model item_transaction {
 
   state            ItemState
   valid_until      DateTime?
-  transaction_code String    @db.Uuid @default(uuid())
+  transaction_code String    @default(uuid()) @db.Uuid
 
   user    user   @relation(fields: [user_id], references: [id])
   user_id String @db.Uuid
