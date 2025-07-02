@@ -254,7 +254,6 @@ describe('PantryService', () => {
           mockParameterTransaction,
         );
 
-
         expect(itemTransactionService.create).toHaveBeenCalledWith(
           {
             items: pantryUpdateMock.items,
@@ -320,6 +319,15 @@ describe('PantryService', () => {
       expect(result).toEqual({
         id: pantryMock.id,
         name: pantryMock.name,
+        items: pantryMock.pantry_items.map((item) => ({
+          id: item.id,
+          name: item.product.name,
+          portion: item.portion,
+          portionType: item.portion_type,
+          productId: item.product.id,
+          state: ITEM_STATE.IN_PANTRY,
+          validUntil: item.valid_until,
+        })),
       });
     });
 

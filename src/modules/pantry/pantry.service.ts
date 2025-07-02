@@ -76,7 +76,7 @@ export class PantryService {
     { items, name }: UpdatePantryBody,
     id: string,
     prismaTransaction?: TransactionClient,
-    userId?: string
+    userId?: string,
   ): Promise<PantryServiceNamespace.UpdateResponse> {
     let updatedPantry: Pantry;
 
@@ -134,6 +134,7 @@ export class PantryService {
           portionType: pantryItem.portion_type,
           productId: pantryItem.product.id,
           state: ITEM_STATE.IN_PANTRY,
+          validUntil: pantryItem.valid_until,
         };
       }),
     };
@@ -156,6 +157,17 @@ export class PantryService {
     return {
       id: pantry.id,
       name: pantry.name,
+      items: pantry.pantry_items.map((pantryItem) => {
+        return {
+          id: pantryItem.id,
+          name: pantryItem.product.name,
+          portion: pantryItem.portion,
+          portionType: pantryItem.portion_type,
+          productId: pantryItem.product.id,
+          state: ITEM_STATE.IN_PANTRY,
+          validUntil: pantryItem.valid_until,
+        };
+      }),
     };
   }
 

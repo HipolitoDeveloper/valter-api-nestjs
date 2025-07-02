@@ -90,6 +90,20 @@ export class PantryRepository {
             id: true,
           },
         },
+        pantry_items: {
+          select: {
+            id: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            portion: true,
+            portion_type: true,
+            valid_until: true
+          },
+        },
       },
     });
   }

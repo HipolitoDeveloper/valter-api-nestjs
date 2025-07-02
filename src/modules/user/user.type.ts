@@ -67,6 +67,7 @@ export namespace UserServiceNamespace {
     surname: string;
     email: string;
     pantry?: {
+      id: string;
       name: string;
     };
     resources: Resources;

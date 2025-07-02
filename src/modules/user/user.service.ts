@@ -116,6 +116,7 @@ export class UserService {
       firstName: user.firstname,
       email: user.email,
       pantry: {
+        id: user.pantry.id,
         name: user.pantry.name,
       },
       resources: actionResourceGrouper(

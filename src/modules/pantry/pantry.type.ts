@@ -1,4 +1,4 @@
-import { PortionType } from '@prisma/client';
+import { ItemState, PortionType } from '@prisma/client';
 import { z } from 'zod';
 import { pantryValidator } from './pantry.validator';
 import { Prisma } from '.prisma/client';
@@ -17,6 +17,7 @@ export namespace PantryRepositoryNamespace {
       };
       portion: number;
       portion_type: PortionType;
+      valid_until?: Date | null;
     }[];
   };
 
@@ -68,12 +69,22 @@ export namespace PantryServiceNamespace {
       portion: number;
       portionType: string;
       productId: string;
+      validUntil?: Date | null;
+      state: ItemState;
     }[];
   };
 
   export type FindOneResponse = {
     id: string;
     name: string;
+    items: {
+      id: string;
+      name: string;
+      portion: number;
+      portionType: string;
+      validUntil?: Date | null;
+      productId: string;
+    }[];
   };
 
   export type FindAllResponse = {

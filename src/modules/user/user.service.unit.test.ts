@@ -187,6 +187,7 @@ describe('UserService', () => {
         surname: userFindByIdMock.surname,
         email: userFindByIdMock.email,
         pantry: {
+          id: userFindByIdMock.pantry.id,
           name: userFindByIdMock.pantry.name,
         },
         resources: {
