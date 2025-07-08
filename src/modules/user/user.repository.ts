@@ -65,6 +65,12 @@ export class UserRepository {
           select: {
             id: true,
             name: true,
+            shoplist: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         profile: {

@@ -119,6 +119,10 @@ export class UserService {
         id: user.pantry.id,
         name: user.pantry.name,
       },
+      shoplist: {
+        id: user.pantry.shoplist?.id,
+        name: user.pantry.shoplist?.name,
+      },
       resources: actionResourceGrouper(
         user.profile.profile_actions?.map(({ action }) => ({
           action: action.name,

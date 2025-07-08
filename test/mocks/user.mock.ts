@@ -80,6 +80,10 @@ export const USER_MOCK = {
       pantry: {
         id: 'id',
         name: 'Pantry name',
+        shoplist: {
+          id: 'id',
+          name: 'Shoplist name',
+        },
       },
       profile: {
         profile_actions: [

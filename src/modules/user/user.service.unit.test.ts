@@ -190,6 +190,10 @@ describe('UserService', () => {
           id: userFindByIdMock.pantry.id,
           name: userFindByIdMock.pantry.name,
         },
+        shoplist: {
+          id: userFindByIdMock.pantry.shoplist.id,
+          name: userFindByIdMock.pantry.shoplist.name,
+        },
         resources: {
           'resource name': {
             create: true,

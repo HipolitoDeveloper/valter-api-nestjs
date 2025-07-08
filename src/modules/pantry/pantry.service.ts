@@ -57,7 +57,8 @@ export class PantryService {
 
   async addItemsToShoplist(
     { items, pantryId }: addItemsToShoplistParam,
-    prismaTransaction?: TransactionClient,
+    prismaTransaction: TransactionClient,
+    userId: string,
   ) {
     try {
       await this.shoplistService.update(
@@ -66,6 +67,7 @@ export class PantryService {
         },
         pantryId,
         prismaTransaction,
+        userId,
       );
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
@@ -111,6 +113,7 @@ export class PantryService {
           await this.addItemsToShoplist(
             { items: inCartItems, pantryId: id },
             prismaTransaction || prisma,
+            userId,
           );
         }
 

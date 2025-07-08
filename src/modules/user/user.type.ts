@@ -18,6 +18,10 @@ export namespace UserRepositoryNamespace {
     pantry: {
       id: string;
       name: string;
+      shoplist?: {
+        id: string;
+        name: string;
+      };
     };
     password?: string;
     profile?: {
@@ -70,6 +74,10 @@ export namespace UserServiceNamespace {
       id: string;
       name: string;
     };
+    shoplist?: {
+      id: string;
+      name: string;
+    }
     resources: Resources;
   };
 
