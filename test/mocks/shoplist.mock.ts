@@ -107,6 +107,17 @@ export const SHOPLIST_MOCK = {
     findOne: {
       id: 'id',
       name: 'Shoplist name',
+      shoplist_items: [
+        {
+          id: 'id',
+          portion: 100,
+          portion_type: PORTION_TYPE.GRAMS,
+          product: {
+            id: 'productId',
+            name: 'Product name',
+          },
+        },
+      ],
     },
 
     findOneByPantryId: {

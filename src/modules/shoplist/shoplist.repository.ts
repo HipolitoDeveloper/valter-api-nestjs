@@ -26,6 +26,19 @@ export class ShoplistRepository {
       select: {
         id: true,
         name: true,
+        shoplist_items: {
+          select: {
+            id: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            portion_type: true,
+            portion: true,
+          },
+        },
       },
     });
   }

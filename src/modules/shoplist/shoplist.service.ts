@@ -68,6 +68,16 @@ export class ShoplistService {
     return {
       id: shoplist.id,
       name: shoplist.name,
+      items: shoplist.shoplist_items.map((shoplistItem) => {
+        return {
+          id: shoplistItem.id,
+          name: shoplistItem.product.name,
+          portion: shoplistItem.portion,
+          portionType: shoplistItem.portion_type,
+          productId: shoplistItem.product.id,
+          state: ITEM_STATE.IN_CART,
+        };
+      }),
     };
   }
 
@@ -88,6 +98,16 @@ export class ShoplistService {
     return {
       id: shoplist.id,
       name: shoplist.name,
+      items: shoplist.shoplist_items?.map((shoplistItem) => {
+        return {
+          id: shoplistItem.id,
+          name: shoplistItem.product.name,
+          portion: shoplistItem.portion,
+          portionType: shoplistItem.portion_type,
+          productId: shoplistItem.product.id,
+          state: ITEM_STATE.IN_CART,
+        };
+      }),
     };
   }
 

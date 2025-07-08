@@ -332,6 +332,14 @@ describe('ShoplistService', () => {
       expect(result).toEqual({
         id: shoplistMock.id,
         name: shoplistMock.name,
+        items: shoplistMock.shoplist_items.map((item) => ({
+          id: item.id,
+          productId: item.product.id,
+          name: item.product.name,
+          portion: item.portion,
+          portionType: item.portion_type,
+          state: ITEM_STATE.IN_CART,
+        })),
       });
     });
 

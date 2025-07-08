@@ -76,6 +76,13 @@ export namespace ShoplistServiceNamespace {
   export type FindOneResponse = {
     id: string;
     name: string;
+    items: {
+      id: string;
+      name: string;
+      portion: number;
+      portionType: string;
+      productId: string;
+    }[];
   };
 
   export type FindAllResponse = {
