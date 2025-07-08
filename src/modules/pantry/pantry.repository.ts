@@ -102,7 +102,7 @@ export class PantryRepository {
             },
             portion: true,
             portion_type: true,
-            valid_until: true
+            valid_until: true,
           },
         },
       },

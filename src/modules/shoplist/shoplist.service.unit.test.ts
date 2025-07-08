@@ -98,6 +98,7 @@ describe('ShoplistService', () => {
     let updateShoplistResponseMock;
     let pantryIdMock;
     let findOneByPantryIdMock;
+    let userIdMock;
 
     beforeEach(() => {
       updateShoplistBodyMock = mocks.SHOPLIST_MOCK.SERVICE.updateShoplistBody;
@@ -108,6 +109,7 @@ describe('ShoplistService', () => {
       updateShoplistResponseMock =
         mocks.SHOPLIST_MOCK.SERVICE.updateShoplistResponse;
       pantryIdMock = mocks.SHOPLIST_MOCK.SERVICE.pantryId;
+      userIdMock = mocks.USER_MOCK.SERVICE.userMock.id;
       jest.resetAllMocks();
     });
     describe('Without parameter transaction', () => {
@@ -176,6 +178,8 @@ describe('ShoplistService', () => {
         const result = await shoplistService.update(
           updateShoplistBodyWithInPantryMock,
           pantryIdMock,
+          null,
+          userIdMock,
         );
 
         expect(shoplistRepository.update).toHaveBeenCalledWith(
@@ -199,12 +203,13 @@ describe('ShoplistService', () => {
           },
           pantryIdMock,
           mockInnerTransaction,
+          userIdMock,
         );
 
         expect(itemTransactionService.create).toHaveBeenCalledWith(
           {
             items: updateShoplistBodyWithInPantryMock.items,
-            userId: undefined,
+            userId: userIdMock,
           },
           mockInnerTransaction,
         );
@@ -339,6 +344,7 @@ describe('ShoplistService', () => {
           portion: item.portion,
           portionType: item.portion_type,
           state: ITEM_STATE.IN_CART,
+          validUntil: item.product?.valid_until,
         })),
       });
     });

@@ -14,6 +14,7 @@ export namespace ShoplistRepositoryNamespace {
       product: {
         id: string;
         name: string;
+        valid_until: Date;
       };
       portion: number;
       portion_type: PortionType;
@@ -82,6 +83,7 @@ export namespace ShoplistServiceNamespace {
       portion: number;
       portionType: string;
       productId: string;
+      validUntil: Date;
     }[];
   };
 

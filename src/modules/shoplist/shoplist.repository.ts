@@ -33,6 +33,7 @@ export class ShoplistRepository {
               select: {
                 id: true,
                 name: true,
+                valid_until: true,
               },
             },
             portion_type: true,
@@ -90,6 +91,7 @@ export class ShoplistRepository {
               select: {
                 id: true,
                 name: true,
+                valid_until: true
               },
             },
             portion_type: true,

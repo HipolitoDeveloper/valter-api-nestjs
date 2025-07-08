@@ -76,6 +76,7 @@ export class ShoplistService {
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
           state: ITEM_STATE.IN_CART,
+          validUntil: shoplistItem.product?.valid_until,
         };
       }),
     };
@@ -106,6 +107,7 @@ export class ShoplistService {
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
           state: ITEM_STATE.IN_CART,
+          validUntil: shoplistItem.product?.valid_until,
         };
       }),
     };
@@ -135,6 +137,7 @@ export class ShoplistService {
   async addItemsToPantry(
     { items, pantryId }: addItemsToPantryParam,
     prismaTransaction: TransactionClient,
+    userId: string,
   ) {
     try {
       await this.pantryService.update(
@@ -143,6 +146,7 @@ export class ShoplistService {
         },
         pantryId,
         prismaTransaction,
+        userId,
       );
     } catch (error) {
       throw new ErrorException(ERRORS.UPDATE_ENTITY_ERROR, error);
@@ -190,6 +194,7 @@ export class ShoplistService {
               pantryId,
             },
             prismaTransaction || prisma,
+            userId,
           );
         }
 
@@ -213,6 +218,7 @@ export class ShoplistService {
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
           state: ITEM_STATE.IN_CART,
+          validUntil: shoplistItem.product?.valid_until,
         };
       }),
     };
