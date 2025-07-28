@@ -21,7 +21,9 @@
     "prisma:migrate": "prisma migrate dev --name",
     "prisma:push": "prisma db push",
     "seed": "ts-node prisma/seeds/seed.ts",
-    "init:container": "cd ./ci-cd && docker-compose up -d "
+    "init:container": "cd ./ci-cd && docker-compose up -d ",
+    "postinstall": "prisma generate",
+    "deploy:prod": "vercel --prod"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.2",
@@ -39,13 +41,14 @@
     "bignumber.js": "^9.1.2",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.2.0",
-    "fastify": "^4.28.1",
+    "fastify": "^5.0.0",
     "passport": "^0.7.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "serverless-http": "^3.2.0",
     "uuid": "^11.1.0",
     "zod": "^3.22.4"
   },

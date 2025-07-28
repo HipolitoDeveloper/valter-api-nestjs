@@ -19,6 +19,7 @@ export const PANTRY_MOCK = {
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
           state: ITEM_STATE.IN_PANTRY,
+          validUntil: "2023-10-01T00:00:00.000Z"
         },
       ],
     },
@@ -76,6 +77,7 @@ export const PANTRY_MOCK = {
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
           state: ITEM_STATE.IN_PANTRY,
+          validUntil: "2023-10-01T00:00:00.000Z"
         },
       ],
     },

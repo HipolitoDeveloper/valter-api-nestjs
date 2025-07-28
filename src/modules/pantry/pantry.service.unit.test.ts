@@ -190,6 +190,7 @@ describe('PantryService', () => {
           },
           pantryIdMock,
           mockInnerTransaction,
+          undefined,
         );
 
         expect(pantryRepository.update).toHaveBeenCalledWith(
@@ -207,7 +208,9 @@ describe('PantryService', () => {
 
         expect(itemTransactionService.create).toHaveBeenCalledWith(
           {
-            items: updatePantryBodyWithInCartMock.items,
+            items: updatePantryBodyWithInCartMock.items.filter(
+              (item) => item.state !== ITEM_STATE.IN_CART,
+            ),
             userId: undefined,
           },
           mockInnerTransaction,

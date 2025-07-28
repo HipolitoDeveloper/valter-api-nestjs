@@ -199,7 +199,10 @@ export class ShoplistService {
         }
 
         await this.itemTransactionService.create(
-          { items, userId },
+          {
+            items: items.filter((item) => item.state !== ITEM_STATE.PURCHASED),
+            userId,
+          },
           prismaTransaction || prisma,
         );
       });

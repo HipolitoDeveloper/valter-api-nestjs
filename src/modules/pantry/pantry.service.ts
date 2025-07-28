@@ -118,7 +118,10 @@ export class PantryService {
         }
 
         await this.itemTransactionService.create(
-          { items, userId },
+          {
+            items: items.filter((item) => item.state !== ITEM_STATE.IN_CART),
+            userId,
+          },
           prismaTransaction || prisma,
         );
       });

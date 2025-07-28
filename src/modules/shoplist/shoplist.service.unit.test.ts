@@ -208,7 +208,9 @@ describe('ShoplistService', () => {
 
         expect(itemTransactionService.create).toHaveBeenCalledWith(
           {
-            items: updateShoplistBodyWithInPantryMock.items,
+            items: updateShoplistBodyWithInPantryMock.items.filter(
+              (item) => item.state !== ITEM_STATE.PURCHASED,
+            ),
             userId: userIdMock,
           },
           mockInnerTransaction,
