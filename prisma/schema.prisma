@@ -201,6 +201,7 @@ enum PortionType {
   GRAMS
   UNITS
   LITERS
+  MILLILITERS
 }
 
 enum ItemState {

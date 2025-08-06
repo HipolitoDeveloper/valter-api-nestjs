@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { createActions } from './action';
-import { createCategory } from './category';
+import { createProducts } from './product';
 import { createProfile } from './profile';
 import { createResource } from './resource';
 import { createUser } from './user';
@@ -15,7 +15,8 @@ main()
     await createActions(prisma);
     await createProfile(prisma);
     await createUser(prisma);
-    await createCategory(prisma);
+    //await createCategory(prisma);
+    await createProducts(prisma);
 
     await prisma.$disconnect();
   })
