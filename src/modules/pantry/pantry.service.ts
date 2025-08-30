@@ -85,7 +85,8 @@ export class PantryService {
     const inPantryItems = items.filter(
       (item) =>
         item.state === ITEM_STATE.IN_PANTRY ||
-        item.state === ITEM_STATE.PURCHASED,
+        item.state === ITEM_STATE.PURCHASED ||
+        item.state === ITEM_STATE.UPDATED,
     );
 
     const inCartItems = items.filter(

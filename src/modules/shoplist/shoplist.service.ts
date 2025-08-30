@@ -163,7 +163,8 @@ export class ShoplistService {
     let updatedShoplist: Shoplist;
 
     const inCartItems = items.filter(
-      (item) => item.state === ITEM_STATE.IN_CART,
+      (item) =>
+        item.state === ITEM_STATE.IN_CART || item.state === ITEM_STATE.UPDATED,
     );
 
     const purchasedItems = items.filter(

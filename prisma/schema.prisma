@@ -53,7 +53,8 @@ model user {
   profile    profile @relation(fields: [profile_id], references: [id])
   profile_id String  @unique @db.Uuid
 
-  item_transaction item_transaction[]
+  item_transaction         item_transaction[]
+  product_recurrence_score product_recurrence_score[]
 }
 
 model pantry {
@@ -94,11 +95,12 @@ model product {
   default_portion      Float?
   default_portion_type PortionType?
 
-  category         category           @relation(fields: [category_id], references: [id])
-  category_id      String             @db.Uuid
-  valid_until      DateTime
-  shoplist_item    shoplist_item[]
-  item_transaction item_transaction[]
+  category                 category                   @relation(fields: [category_id], references: [id])
+  category_id              String                     @db.Uuid
+  valid_until              DateTime
+  shoplist_item            shoplist_item[]
+  item_transaction         item_transaction[]
+  product_recurrence_score product_recurrence_score[]
 }
 
 model category {
@@ -197,6 +199,25 @@ model resources {
   actions    action[]
 }
 
+model product_recurrence_score {
+  id                String   @id @default(uuid()) @db.Uuid
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  ewma_latest       Float
+  ewma_avg          Float
+  recurrence_score  Float
+  total_logs        Int
+  states_considered String
+
+  user    user   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  product    product @relation(fields: [product_id], references: [id])
+  product_id String  @db.Uuid
+
+  @@unique([user_id, product_id])
+}
+
 enum PortionType {
   GRAMS
   UNITS
@@ -209,4 +230,5 @@ enum ItemState {
   REMOVED
   IN_PANTRY
   PURCHASED
+  UPDATED
 }
