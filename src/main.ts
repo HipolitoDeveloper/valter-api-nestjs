@@ -26,7 +26,7 @@ async function bootstrap() {
   });
   app.enableShutdownHooks();
   // app.register(new LoggerMiddleware());
-  await app.listen(process.env.PORT || 4000);
+  await app.listen(process.env.PORT || 4000, '0.0.0.0');
 }
 
 bootstrap();

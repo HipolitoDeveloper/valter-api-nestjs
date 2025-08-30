@@ -55,6 +55,12 @@ $ npm run prisma:push
 $ npm run seed
 ```
 
+## Docker Run
+
+```bash
+
+```
+
 ## Test
 
 ```bash
