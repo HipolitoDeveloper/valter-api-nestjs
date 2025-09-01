@@ -17,7 +17,7 @@ export namespace PantryRepositoryNamespace {
       };
       portion: number;
       portion_type: PortionType;
-      valid_until?: Date | null;
+      valid_for_days?: number;
     }[];
   };
 
@@ -33,7 +33,7 @@ export namespace PantryRepositoryNamespace {
       productId?: string;
       portion?: number;
       portionType?: PortionType;
-      validUntil?: string;
+      validForDays?: number;
     }[];
     removedItems: string[];
     name?: string;
@@ -69,7 +69,7 @@ export namespace PantryServiceNamespace {
       portion: number;
       portionType: string;
       productId: string;
-      validUntil?: Date | null;
+      validForDays?: number;
       state: ItemState;
     }[];
   };
@@ -82,7 +82,7 @@ export namespace PantryServiceNamespace {
       name: string;
       portion: number;
       portionType: string;
-      validUntil?: Date | null;
+      validForDays?: number;
       productId: string;
     }[];
   };

@@ -76,7 +76,7 @@ export class ShoplistService {
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
           state: ITEM_STATE.IN_CART,
-          validUntil: shoplistItem.product?.valid_until,
+          validForDays: shoplistItem.product?.valid_for_days,
         };
       }),
     };
@@ -107,7 +107,7 @@ export class ShoplistService {
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
           state: ITEM_STATE.IN_CART,
-          validUntil: shoplistItem.product?.valid_until,
+          validForDays: shoplistItem.product?.valid_for_days,
         };
       }),
     };
@@ -222,7 +222,7 @@ export class ShoplistService {
           portionType: shoplistItem.portion_type,
           productId: shoplistItem.product.id,
           state: ITEM_STATE.IN_CART,
-          validUntil: shoplistItem.product?.valid_until,
+          validForDays: shoplistItem.product?.valid_for_days,
         };
       }),
     };

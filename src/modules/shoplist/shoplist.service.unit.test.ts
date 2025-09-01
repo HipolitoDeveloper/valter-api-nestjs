@@ -346,7 +346,7 @@ describe('ShoplistService', () => {
           portion: item.portion,
           portionType: item.portion_type,
           state: ITEM_STATE.IN_CART,
-          validUntil: item.product?.valid_until,
+          validForDays: item.product?.valid_for_days,
         })),
       });
     });

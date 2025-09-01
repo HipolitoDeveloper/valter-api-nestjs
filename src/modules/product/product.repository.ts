@@ -13,7 +13,7 @@ export class ProductRepository {
         id: true,
         name: true,
         default_portion_type: true,
-        valid_until: true,
+        valid_for_days: true,
         default_portion: true,
       },
     });
@@ -39,7 +39,7 @@ export class ProductRepository {
         id: true,
         name: true,
         default_portion_type: true,
-        valid_until: true,
+        valid_for_days: true,
         default_portion: true,
         category: {
           select: {
@@ -69,7 +69,7 @@ export class ProductRepository {
         id: true,
         name: true,
         default_portion_type: true,
-        valid_until: true,
+        valid_for_days: true,
         default_portion: true,
         category: {
           select: {

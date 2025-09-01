@@ -226,16 +226,16 @@ describe('ShoplistValidator', () => {
         }
       });
 
-      it('should fail validation if valid until is not a date', () => {
-        shoplistData.items[0].validUntil = 1;
+      it('should fail validation if valid until is not a number', () => {
+        shoplistData.items[0].validForDays = '1';
         const invalidData = { ...shoplistData };
         const result: any = pantryValidator.update.safeParse(invalidData);
 
         expect(result.success).toBe(false);
         if (!result.success) {
           const error = result.error;
-          expect(error.issues[0].path).toContain('validUntil');
-          expect(error.issues[0].message).toBe('validUntil is required');
+          expect(error.issues[0].path).toContain('validForDays');
+          expect(error.issues[0].message).toBe('validForDays is required');
         }
       });
     });

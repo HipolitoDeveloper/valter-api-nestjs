@@ -70,12 +70,12 @@ model pantry {
 }
 
 model pantry_item {
-  id           String      @id @default(uuid()) @db.Uuid
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
-  portion      Float
-  portion_type PortionType
-  valid_until  DateTime?
+  id             String      @id @default(uuid()) @db.Uuid
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  portion        Float
+  portion_type   PortionType
+  valid_for_days Float?
 
   pantry    pantry @relation(fields: [pantry_id], references: [id])
   pantry_id String @db.Uuid
@@ -97,7 +97,7 @@ model product {
 
   category                 category                   @relation(fields: [category_id], references: [id])
   category_id              String                     @db.Uuid
-  valid_until              DateTime
+  valid_for_days           Float?
   shoplist_item            shoplist_item[]
   item_transaction         item_transaction[]
   product_recurrence_score product_recurrence_score[]
@@ -148,7 +148,7 @@ model item_transaction {
   portion_type PortionType
 
   state            ItemState
-  valid_until      DateTime?
+  valid_for_days   Float?
   transaction_code String    @default(uuid()) @db.Uuid
 
   user    user   @relation(fields: [user_id], references: [id])

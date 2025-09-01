@@ -99,7 +99,7 @@ export class ItemTransactionService {
         portion: item.portion,
         portion_type: item.portionType,
         state: item.state,
-        valid_until: item.validUntil,
+        valid_for_days: item.validForDays,
         user_id: userId,
         transaction_code: item.transactionCode,
       })),

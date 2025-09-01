@@ -28,7 +28,7 @@ export namespace ItemTransactionServiceNamespace {
       portionType?: PortionType;
       productId?: string;
       state?: ItemState;
-      validUntil?: string;
+      validForDays?: number;
     }[];
   };
 }

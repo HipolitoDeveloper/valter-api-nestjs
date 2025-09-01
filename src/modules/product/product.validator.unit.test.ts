@@ -8,7 +8,7 @@ describe('ProductValidator', () => {
       productData = {
         name: 'Test product',
         categoryId: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
-        validUntil: '2024-12-31T23:59:59Z',
+        validForDays: 0,
       };
     });
 
@@ -70,41 +70,41 @@ describe('ProductValidator', () => {
     });
 
     it('should fail validation if valid until is missing', () => {
-      delete productData.validUntil;
+      delete productData.validForDays;
       const invalidData = { ...productData };
       const result: any = productValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
         const error = result.error;
-        expect(error.issues[0].path).toContain('validUntil');
-        expect(error.issues[0].message).toBe('validUntil is required');
+        expect(error.issues[0].path).toContain('validForDays');
+        expect(error.issues[0].message).toBe('validForDays is required');
       }
     });
 
     it('should fail validation if valid until is empty', () => {
-      productData.validUntil = undefined;
+      productData.validForDays = undefined;
       const invalidData = { ...productData };
       const result: any = productValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
         const error = result.error;
-        expect(error.issues[0].path).toContain('validUntil');
-        expect(error.issues[0].message).toBe('validUntil is required');
+        expect(error.issues[0].path).toContain('validForDays');
+        expect(error.issues[0].message).toBe('validForDays is required');
       }
     });
 
-    it('should fail validation if valid until is not a date', () => {
-      productData.validUntil = 1;
+    it('should fail validation if valid until is not a number', () => {
+      productData.validForDays = '1';
       const invalidData = { ...productData };
       const result: any = productValidator.create.safeParse(invalidData);
 
       expect(result.success).toBe(false);
       if (!result.success) {
         const error = result.error;
-        expect(error.issues[0].path).toContain('validUntil');
-        expect(error.issues[0].message).toBe('validUntil is required');
+        expect(error.issues[0].path).toContain('validForDays');
+        expect(error.issues[0].message).toBe('validForDays is required');
       }
     });
   });

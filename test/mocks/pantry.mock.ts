@@ -19,7 +19,7 @@ export const PANTRY_MOCK = {
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
           state: ITEM_STATE.IN_PANTRY,
-          validUntil: "2023-10-01T00:00:00.000Z"
+          validForDays: 0,
         },
       ],
     },
@@ -77,7 +77,7 @@ export const PANTRY_MOCK = {
           portion: 100,
           portionType: PORTION_TYPE.GRAMS,
           state: ITEM_STATE.IN_PANTRY,
-          validUntil: "2023-10-01T00:00:00.000Z"
+          validForDays: 0,
         },
       ],
     },
@@ -100,8 +100,7 @@ export const PANTRY_MOCK = {
             id: 'productId',
             name: 'Product name',
           },
-          valid_until: '2023-10-01T00:00:00.000Z',
-
+          valid_for_days: 0,
         },
       ],
     },
@@ -118,7 +117,7 @@ export const PANTRY_MOCK = {
           },
           portion: 100,
           portion_type: 'GRAMS',
-          valid_until: '2023-10-01T00:00:00.000Z',
+          valid_for_days: 0,
         },
         {
           id: '812ea3bf-99ba-4dc4-856a-0667c71e4073',
@@ -128,7 +127,7 @@ export const PANTRY_MOCK = {
           },
           portion: 100,
           portion_type: 'GRAMS',
-          valid_until: '2023-10-01T00:00:00.000Z',
+          valid_for_days: 0,
         },
       ],
     },

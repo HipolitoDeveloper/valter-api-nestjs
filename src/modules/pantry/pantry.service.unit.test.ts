@@ -329,7 +329,7 @@ describe('PantryService', () => {
           portionType: item.portion_type,
           productId: item.product.id,
           state: ITEM_STATE.IN_PANTRY,
-          validUntil: item.valid_until,
+          validForDays: item.valid_for_days,
         })),
       });
     });

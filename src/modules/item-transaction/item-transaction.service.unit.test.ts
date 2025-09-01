@@ -147,28 +147,28 @@ describe('ItemTransactionService', () => {
         portion: 2,
         portionType: PORTION_TYPE.GRAMS,
         state: ITEM_STATE.IN_CART,
-        validUntil: '2025-06-01T00:00:00Z',
+        validForDays: 0,
       },
       {
         productId: 'p2',
         portion: 3,
         portionType: PORTION_TYPE.GRAMS,
         state: ITEM_STATE.IN_PANTRY,
-        validUntil: '2025-06-02T00:00:00Z',
+        validForDays: 0,
       },
       {
         productId: 'p3',
         portion: 1,
         portionType: PORTION_TYPE.GRAMS,
         state: ITEM_STATE.PURCHASED,
-        validUntil: '2025-06-03T00:00:00Z',
+        validForDays: 0,
       },
       {
         productId: 'p4',
         portion: 4,
         portionType: PORTION_TYPE.GRAMS,
         state: ITEM_STATE.REMOVED,
-        validUntil: '2025-06-04T00:00:00Z',
+        validForDays: 0,
       },
     ];
 
@@ -180,7 +180,7 @@ describe('ItemTransactionService', () => {
         .spyOn(itemTransactionService, 'getTransactionCode')
         .mockResolvedValue('mov-code');
 
-      const result = await itemTransactionService.create(
+      await itemTransactionService.create(
         { items, userId },
         prismaTx,
       );
@@ -216,7 +216,7 @@ describe('ItemTransactionService', () => {
             portion: 2,
             portion_type: PORTION_TYPE.GRAMS,
             state: ITEM_STATE.IN_CART,
-            valid_until: '2025-06-01T00:00:00Z',
+            valid_for_days: 0,
             user_id: userId,
             transaction_code: 'gen-code',
           },
@@ -225,7 +225,7 @@ describe('ItemTransactionService', () => {
             portion: 3,
             portion_type: PORTION_TYPE.GRAMS,
             state: ITEM_STATE.IN_PANTRY,
-            valid_until: '2025-06-02T00:00:00Z',
+            valid_for_days: 0,
             user_id: userId,
             transaction_code: 'gen-code',
           },
@@ -234,7 +234,7 @@ describe('ItemTransactionService', () => {
             portion: 1,
             portion_type: PORTION_TYPE.GRAMS,
             state: ITEM_STATE.PURCHASED,
-            valid_until: '2025-06-03T00:00:00Z',
+            valid_for_days: 0,
             user_id: userId,
             transaction_code: 'mov-code',
           },
@@ -243,7 +243,7 @@ describe('ItemTransactionService', () => {
             portion: 4,
             portion_type: PORTION_TYPE.GRAMS,
             state: ITEM_STATE.REMOVED,
-            valid_until: '2025-06-04T00:00:00Z',
+            valid_for_days: 0,
             user_id: userId,
             transaction_code: 'mov-code',
           },

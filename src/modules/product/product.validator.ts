@@ -8,11 +8,7 @@ export const productValidator = {
     categoryId: z
       .string({ message: 'id is required' })
       .uuid({ message: 'id is not a valid uuid' }),
-    validUntil: z
-      .string({ message: 'validUntil is required' })
-      .refine((val) => !Number.isNaN(Date.parse(val)), {
-        message: 'validUntil is not a valid date',
-      }),
+    validForDays: z.number({ message: 'validForDays is required' }),
   }),
   update: z.object({
     id: z

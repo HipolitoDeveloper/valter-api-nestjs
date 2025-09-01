@@ -28,7 +28,7 @@ export class ProductService {
             id: product.categoryId,
           },
         },
-        valid_until: new Date(product.validUntil),
+        valid_for_days: product.validForDays,
       });
     } catch (error) {
       throw new ErrorException(ERRORS.CREATE_ENTITY_ERROR, error);
@@ -107,7 +107,7 @@ export class ProductService {
         },
         defaultPortion: product.default_portion,
         defaultPortionType: product.default_portion_type,
-        validUntil: product.valid_until,
+        validForDays: product.valid_for_days,
       })),
       totalCount: products.totalCount,
     };

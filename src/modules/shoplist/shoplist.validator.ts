@@ -30,11 +30,8 @@ export const shoplistValidator = {
             .positive({ message: 'portion must be a positive number' }),
           portionType: PortionTypeSchema,
           state: ItemSchema,
-          validUntil: z
-            .string({ message: 'validUntil is required' })
-            .refine((val) => !Number.isNaN(Date.parse(val)), {
-              message: 'validUntil is not a valid date',
-            })
+          validForDays: z
+            .number({ message: 'validForDays is required' })
             .optional(),
         }),
         { message: 'items is required' },

@@ -6,7 +6,7 @@ import { Prisma } from '.prisma/client';
 export namespace ProductRepositoryNamespace {
   export type Product = Pick<
     Prisma.ProductGroupByOutputType,
-    'name' | 'id' | 'default_portion_type' | 'default_portion' | 'valid_until'
+    'name' | 'id' | 'default_portion_type' | 'default_portion' | 'valid_for_days'
   > & {
     category?: {
       id: string;

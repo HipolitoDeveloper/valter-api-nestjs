@@ -141,7 +141,7 @@ export class PantryService {
           portionType: pantryItem.portion_type,
           productId: pantryItem.product.id,
           state: ITEM_STATE.IN_PANTRY,
-          validUntil: pantryItem.valid_until,
+          validForDays: pantryItem.valid_for_days,
         };
       }),
     };
@@ -172,7 +172,7 @@ export class PantryService {
           portionType: pantryItem.portion_type,
           productId: pantryItem.product.id,
           state: ITEM_STATE.IN_PANTRY,
-          validUntil: pantryItem.valid_until,
+          validForDays: pantryItem.valid_for_days,
         };
       }),
     };
