@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PRODUCT_MOCK } from '../../../test/mocks/product.mock';
+import { USER_MOCK } from '../../../test/mocks/user.mock';
 import { ExceptionHandler } from '../../common/handler/exception.handler';
+import { Request } from '../../common/types/http.type';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { ProductControllerNamespace } from './product.type';
@@ -14,6 +16,7 @@ describe('ProductController', () => {
     update: jest.fn(),
     findOne: jest.fn(),
     findAll: jest.fn(),
+    findAllRecommendedProducts: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -115,6 +118,34 @@ describe('ProductController', () => {
       mockProductService.findAll.mockRejectedValue(new Error('Error'));
       await expect(
         productController.findAll(findAllParamsMock),
+      ).rejects.toThrow('Error');
+    });
+  });
+
+  describe('findAllRecommendedProducts', () => {
+    let currentUserMock;
+    beforeEach(() => {
+      currentUserMock = USER_MOCK.currentUser;
+    });
+    it('should findAll products', async () => {
+      const result = await productController.findAllRecommendedProducts({
+        currentUser: currentUserMock,
+      } as Request);
+      expect(result).toEqual(undefined);
+      expect(
+        mockProductService.findAllRecommendedProducts,
+      ).toHaveBeenCalledWith({
+        userId: currentUserMock.id,
+        pantryId: currentUserMock.pantryId,
+      });
+    });
+
+    it('should throw an error if findAll fails', async () => {
+      mockProductService.findAllRecommendedProducts.mockRejectedValue(new Error('Error'));
+      await expect(
+        productController.findAllRecommendedProducts({
+          currentUser: currentUserMock,
+        } as Request),
       ).rejects.toThrow('Error');
     });
   });

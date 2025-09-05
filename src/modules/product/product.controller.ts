@@ -6,11 +6,14 @@ import {
   Post,
   Put,
   Query,
+  Req, UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../common/guards/auth-jwt.guard';
 import { ACTIONS, RESOURCES } from '../../common/permission/permission.enum';
 import { ZodValidationPipe } from '../../common/pipe/zod-validation.pipe';
+import { Request } from '../../common/types/http.type';
 import { ProductService } from './product.service';
 import { ProductControllerNamespace } from './product.type';
 import { productValidator } from './product.validator';
@@ -19,6 +22,7 @@ import UpdateProductBody = ProductControllerNamespace.UpdateProductBody;
 import FindAllQuery = ProductControllerNamespace.FindAllQuery;
 import FindOneParam = ProductControllerNamespace.FindOneParam;
 
+@UseGuards(JwtAuthGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -54,5 +58,14 @@ export class ProductController {
     { id }: FindOneParam,
   ) {
     return this.productService.findOne(id);
+  }
+
+  @Get('recommended')
+  @Roles(RESOURCES.PRODUCT, ACTIONS.FIND_ALL_RECOMMENDED_PRODUCTS)
+  async findAllRecommendedProducts(@Req() req: Request) {
+    return this.productService.findAllRecommendedProducts({
+      userId: req.currentUser.id,
+      pantryId: req.currentUser.pantryId,
+    });
   }
 }

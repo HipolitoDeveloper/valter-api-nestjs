@@ -7,6 +7,8 @@ export const RESOURCES = {
 
 export const ACTIONS = {
   FIND_ALL: 'findAll',
+  FIND_ALL_RECOMMENDED_PRODUCTS: 'findAllRecommendedProducts',
+
   FIND_ONE: 'findOne',
   UPDATE: 'update',
   CREATE: 'create',

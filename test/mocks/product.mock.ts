@@ -3,7 +3,7 @@ export const PRODUCT_MOCK = {
     createProductBody: {
       name: 'Product Name',
       categoryId: 'id',
-      validForDays:0,
+      validForDays: 0,
     },
 
     updateProductBody: {
@@ -35,6 +35,14 @@ export const PRODUCT_MOCK = {
         },
       ],
       totalCount: 10,
+    },
+    findAllRecommendedProductsResponse: {
+      data: [
+        {
+          id: '01ce2a72-2c23-4ffb-9f09-08edf0fabfa9',
+          name: 'Product First',
+        },
+      ],
     },
   },
   REPOSITORY: {
@@ -70,6 +78,15 @@ export const PRODUCT_MOCK = {
         },
       ],
       totalCount: 10,
+    },
+
+    findAllRecommendedProducts: {
+      data: [
+        {
+          id: '01ce2a72-2c23-4ffb-9f09-08edf0fabfa9',
+          name: 'Product First',
+        },
+      ],
     },
   },
 };

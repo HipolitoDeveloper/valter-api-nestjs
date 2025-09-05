@@ -11,6 +11,8 @@ import Product = ProductRepositoryNamespace.Product;
 import CreateProductBody = ProductControllerNamespace.CreateProductBody;
 import UpdateProductBody = ProductControllerNamespace.UpdateProductBody;
 import FindAllQuery = ProductControllerNamespace.FindAllQuery;
+import FindAllRecommendedProductsQuery = ProductControllerNamespace.FindAllRecommendedProductsQuery;
+import RecommendedProduct = ProductRepositoryNamespace.RecommendedProduct;
 
 @Injectable()
 export class ProductService {
@@ -110,6 +112,28 @@ export class ProductService {
         validForDays: product.valid_for_days,
       })),
       totalCount: products.totalCount,
+    };
+  }
+
+  async findAllRecommendedProducts({
+    userId,
+    pantryId,
+  }: FindAllRecommendedProductsQuery): Promise<ProductServiceNamespace.FindAllRecommendedProductsResponse> {
+    let products: { data: RecommendedProduct[] };
+    try {
+      products = await this.productRepository.findAllRecommendedProducts(
+        userId,
+        pantryId,
+      );
+    } catch {
+      throw new ErrorException(ERRORS.DATABASE_ERROR);
+    }
+
+    return {
+      data: products.data.map((product) => ({
+        id: product.id,
+        name: product.name,
+      })),
     };
   }
 }
