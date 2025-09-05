@@ -88,4 +88,43 @@ export class ProductRepository {
       totalCount: totalCount,
     };
   }
+
+  async findAllRecommendedProducts(userId: string, pantryId: string) {
+
+    const data = await prisma.product_recurrence_score.findMany({
+      where: {
+        user_id: userId,
+        product: {
+          shoplist_item: {
+            none: {
+              shoplist: {
+                pantry_id: pantryId,
+              },
+            },
+          },
+          pantry_items: {
+            none: {
+              pantry_id: pantryId,
+            },
+          },
+        },
+      },
+      select: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            default_portion_type: true,
+            valid_for_days: true,
+            default_portion: true,
+          },
+        },
+      },
+      take: 10,
+      orderBy: { recurrence_score: 'desc' },
+    });
+    return {
+      data: data.map((item) => item.product),
+    };
+  }
 }

@@ -20,6 +20,7 @@ describe('ProductService', () => {
             update: jest.fn(),
             findOne: jest.fn(),
             findAll: jest.fn(),
+            findAllRecommendedProducts: jest.fn(),
           },
         },
       ],
@@ -122,7 +123,7 @@ describe('ProductService', () => {
         category: {
           id: productMock.category.id,
           name: productMock.category.name,
-        }
+        },
       });
     });
 
@@ -173,6 +174,48 @@ describe('ProductService', () => {
       await expect(productService.findAll(paginationMock)).rejects.toThrow(
         new ErrorException(ERRORS.DATABASE_ERROR),
       );
+    });
+  });
+
+  describe('findAllRecommendedProducts', () => {
+    let recommendedProductsMock;
+    let findAllRecommendedProductsMock;
+    let pantryId;
+    let userId;
+
+    beforeEach(() => {
+      pantryId = mocks.USER_MOCK.currentUser.pantryId;
+      userId = mocks.USER_MOCK.currentUser.id;
+      recommendedProductsMock =
+        mocks.PRODUCT_MOCK.SERVICE.findAllRecommendedProductsResponse;
+      findAllRecommendedProductsMock =
+        mocks.PRODUCT_MOCK.REPOSITORY.findAllRecommendedProducts;
+    });
+    it('should findAllRecommendedProducts correctly', async () => {
+      jest
+        .spyOn(productRepository, 'findAllRecommendedProducts')
+        .mockResolvedValue(findAllRecommendedProductsMock);
+
+      const result = await productService.findAllRecommendedProducts({
+        userId,
+        pantryId,
+      });
+
+      expect(productRepository.findAllRecommendedProducts).toHaveBeenCalledWith(
+        userId,
+        pantryId,
+      );
+      expect(result).toEqual(recommendedProductsMock);
+    });
+
+    it('should throw ErrorException "DATABASE_ERROR" if findAllRecommendedProducts fails', async () => {
+      jest
+        .spyOn(productRepository, 'findAllRecommendedProducts')
+        .mockRejectedValue(new Error());
+
+      await expect(
+        productService.findAllRecommendedProducts({ userId, pantryId }),
+      ).rejects.toThrow(new ErrorException(ERRORS.DATABASE_ERROR));
     });
   });
 });

@@ -66,8 +66,7 @@ export class ItemTransactionService {
       .filter(
         (item) =>
           item.state === ITEM_STATE.IN_CART ||
-          item.state === ITEM_STATE.IN_PANTRY ||
-          item.state === ITEM_STATE.UPDATED,
+          item.state === ITEM_STATE.IN_PANTRY,
       )
       .map(async (item) => ({
         ...item,
@@ -84,7 +83,8 @@ export class ItemTransactionService {
       .filter(
         (item) =>
           item.state === ITEM_STATE.PURCHASED ||
-          item.state === ITEM_STATE.REMOVED,
+          item.state === ITEM_STATE.REMOVED ||
+          item.state === ITEM_STATE.UPDATED,
       )
       .map(async (item) => ({
         ...item,

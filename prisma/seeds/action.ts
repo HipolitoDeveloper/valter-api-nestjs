@@ -291,6 +291,21 @@ const createActionsFromProductResource = async (prisma: PrismaClient) => {
       name: ACTIONS.FIND_ONE,
     },
   });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: productResource?.id,
+        name: ACTIONS.FIND_ALL_RECOMMENDED_PRODUCTS,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: productResource?.id,
+      name: ACTIONS.FIND_ALL_RECOMMENDED_PRODUCTS,
+    },
+  });
 };
 
 export const createActions = async (prisma: PrismaClient) => {

@@ -6,13 +6,26 @@ import { Prisma } from '.prisma/client';
 export namespace ProductRepositoryNamespace {
   export type Product = Pick<
     Prisma.ProductGroupByOutputType,
-    'name' | 'id' | 'default_portion_type' | 'default_portion' | 'valid_for_days'
+    | 'name'
+    | 'id'
+    | 'default_portion_type'
+    | 'default_portion'
+    | 'valid_for_days'
   > & {
     category?: {
       id: string;
       name: string;
     };
   };
+
+  export type RecommendedProduct = Pick<
+    Prisma.ProductGroupByOutputType,
+    | 'name'
+    | 'id'
+    | 'default_portion_type'
+    | 'default_portion'
+    | 'valid_for_days'
+  >;
 
   export type FindAllParams = {
     limit: number;
@@ -27,6 +40,10 @@ export namespace ProductControllerNamespace {
   export type FindAllQuery = z.infer<typeof productValidator.findAll>;
   export type CreateProductBody = z.infer<typeof productValidator.create>;
   export type UpdateProductBody = z.infer<typeof productValidator.update>;
+  export type FindAllRecommendedProductsQuery = {
+    userId: string;
+    pantryId: string;
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -56,5 +73,12 @@ export namespace ProductServiceNamespace {
       name: string;
     }[];
     totalCount: number;
+  };
+
+  export type FindAllRecommendedProductsResponse = {
+    data: {
+      id: string;
+      name: string;
+    }[];
   };
 }

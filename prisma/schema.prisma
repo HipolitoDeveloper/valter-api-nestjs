@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -55,6 +56,7 @@ model user {
 
   item_transaction         item_transaction[]
   product_recurrence_score product_recurrence_score[]
+  notification             notification[]
 }
 
 model pantry {
@@ -101,6 +103,7 @@ model product {
   shoplist_item            shoplist_item[]
   item_transaction         item_transaction[]
   product_recurrence_score product_recurrence_score[]
+  notification_expires     notification_expires[]
 }
 
 model category {
@@ -216,6 +219,39 @@ model product_recurrence_score {
   product_id String  @db.Uuid
 
   @@unique([user_id, product_id])
+}
+
+model notification {
+  id         String           @id @default(uuid()) @db.Uuid
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+  type       NotificationType
+  is_read    Boolean          @default(false)
+
+  user    user   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  notification_expires notification_expires[]
+}
+
+model notification_expires {
+  id                       String   @id @default(uuid()) @db.Uuid
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+  is_out                   Boolean  @default(false)
+  is_expired               Boolean  @default(false)
+  predicted_probability    Float
+  days_since_last_purchase Int
+
+  product    product @relation(fields: [product_id], references: [id])
+  product_id String  @db.Uuid
+
+  notification    notification @relation(fields: [notification_id], references: [id])
+  notification_id String       @db.Uuid
+}
+
+enum NotificationType {
+  PRODUCT_EXPIRES
 }
 
 enum PortionType {
