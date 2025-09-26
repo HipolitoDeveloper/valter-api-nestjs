@@ -3,6 +3,7 @@ export const RESOURCES = {
   USER: 'user',
   SHOPLIST: 'shoplist',
   PRODUCT: 'product',
+  NOTIFICATION: 'notification',
 };
 
 export const ACTIONS = {

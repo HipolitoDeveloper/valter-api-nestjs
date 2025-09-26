@@ -48,4 +48,15 @@ export const createResource = async (prisma: PrismaClient) => {
       name: RESOURCES.PRODUCT,
     },
   });
+
+  await prisma.resources.upsert({
+    where: {
+      name: RESOURCES.NOTIFICATION,
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      name: RESOURCES.NOTIFICATION,
+    },
+  });
 };

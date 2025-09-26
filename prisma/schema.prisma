@@ -1,7 +1,8 @@
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
+  relationMode = "prisma"
 }
 
 generator client {
@@ -231,7 +232,7 @@ model notification {
   user    user   @relation(fields: [user_id], references: [id])
   user_id String @db.Uuid
 
-  notification_expires notification_expires[]
+  notification_expires notification_expires?
 }
 
 model notification_expires {
@@ -246,8 +247,8 @@ model notification_expires {
   product    product @relation(fields: [product_id], references: [id])
   product_id String  @db.Uuid
 
+  notification_id String       @unique @db.Uuid
   notification    notification @relation(fields: [notification_id], references: [id])
-  notification_id String       @db.Uuid
 }
 
 enum NotificationType {

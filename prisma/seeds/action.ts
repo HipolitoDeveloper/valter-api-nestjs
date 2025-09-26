@@ -308,9 +308,38 @@ const createActionsFromProductResource = async (prisma: PrismaClient) => {
   });
 };
 
+const createActionsFromNotificationResource = async (prisma: PrismaClient) => {
+  const generateUuid = uuidv4 as () => string;
+
+  const productResource = await prisma.resources.findFirstOrThrow({
+    select: {
+      id: true,
+    },
+    where: {
+      name: RESOURCES.NOTIFICATION,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: productResource?.id,
+        name: ACTIONS.FIND_ALL,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: productResource?.id,
+      name: ACTIONS.FIND_ALL,
+    },
+  });
+};
+
 export const createActions = async (prisma: PrismaClient) => {
   await createActionsFromUserResource(prisma);
   await createActionsFromPantryResource(prisma);
   await createActionsFromShoplistResource(prisma);
   await createActionsFromProductResource(prisma);
+  await createActionsFromNotificationResource(prisma);
 };
