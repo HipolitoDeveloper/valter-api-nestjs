@@ -3,6 +3,7 @@ export const ERRORS = {
   FORBIDDEN: 'forbidden',
   VALIDATION_ERROR: 'validation.error',
   DATABASE_ERROR: 'database.thrown.an.error',
+  INTEGRATION_ERROR: 'integration.error',
   NOT_FOUND_ENTITY: 'database.not.found.entity',
   CREATE_ENTITY_ERROR: 'database.thrown.an.error.while.entity.was.created',
   UPDATE_ENTITY_ERROR: 'database.thrown.an.error.while.entity.was.updated',

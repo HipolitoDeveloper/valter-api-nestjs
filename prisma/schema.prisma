@@ -228,9 +228,8 @@ model notification {
   updated_at DateTime         @updatedAt
   type       NotificationType
   is_read    Boolean          @default(false)
-
-  user    user   @relation(fields: [user_id], references: [id])
-  user_id String @db.Uuid
+  user       user             @relation(fields: [user_id], references: [id])
+  user_id    String           @db.Uuid
 
   notification_expires notification_expires?
 }
@@ -268,4 +267,6 @@ enum ItemState {
   IN_PANTRY
   PURCHASED
   UPDATED
+  EXPIRED
+  OUT
 }

@@ -4,45 +4,136 @@ export const NOTIFICATION_MOCK = {
       limit: 10,
       page: 1,
     },
-
     findAllResponse: {
       data: [
         {
-          id: '1625b7f3-85e9-4e82-8f58-57dd2f17865e',
-          isRead: true,
+          id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+          isRead: false,
           type: 'PRODUCT_EXPIRES',
           expiresDetails: {
             product: {
-              name: 'Massa pastel redonda',
+              name: 'Test Product',
             },
             isExpired: false,
-            isOut: false,
-            daysSinceLastPurchase: 100,
+            isOut: true,
+            daysSinceLastPurchase: 5,
           },
         },
       ],
-      totalCount: 1
+      totalCount: 1,
+    },
+    updateQuery: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      isRead: true,
+      isOut: false,
+      isExpired: true,
+    },
+    updateResponse: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      isRead: true,
+      type: 'PRODUCT_EXPIRES',
+      expiresDetails: {
+        product: {
+          name: 'Test Product',
+        },
+        isExpired: true,
+        isOut: false,
+        daysSinceLastPurchase: 3,
+      },
+    },
+    updateNotificationDetailsResponse: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      isRead: true,
+      type: 'PRODUCT_EXPIRES',
+      expiresDetails: {
+        product: {
+          name: 'Test Product',
+        },
+        isExpired: true,
+        isOut: false,
+        daysSinceLastPurchase: 3,
+      },
+    },
+    handleReadResponse: [
+      {
+        id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+        isRead: true,
+      },
+    ],
+    updateNotificationDetailsData: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      isExpired: true,
+      isOut: false,
+    },
+    handleReadData: {
+      ids: ['8aaa1cb2-38ee-4100-a56c-789c9e5ffe48'],
+      isRead: true,
+    },
+    notification: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      is_read: true,
+      type: 'EXPIRES',
+      notification_expires: {
+        product: {
+          id: 'product-id',
+          name: 'Test Product',
+        },
+        is_expired: false,
+        is_out: true,
+        days_since_last_purchase: 5,
+      },
     },
   },
   REPOSITORY: {
     findAll: {
       data: [
         {
-          id: '1625b7f3-85e9-4e82-8f58-57dd2f17865e',
-          is_read: true,
+          id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+          is_read: false,
           type: 'PRODUCT_EXPIRES',
           notification_expires: {
             product: {
-              id: '01ce2a72-2c23-4ffb-9f09-08edf0fabfa9',
-              name: 'Massa pastel redonda',
+              name: 'Test Product',
             },
             is_expired: false,
-            is_out: false,
-            days_since_last_purchase: 100,
+            is_out: true,
+            days_since_last_purchase: 5,
           },
         },
       ],
       totalCount: 1,
     },
+    findById: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      is_read: false,
+      type: 'PRODUCT_EXPIRES',
+      notification_expires: {
+        product: {
+          name: 'Test Product',
+        },
+        is_expired: false,
+        is_out: false,
+        days_since_last_purchase: 3,
+      },
+    },
+    update: {
+      id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+      is_read: true,
+      type: 'PRODUCT_EXPIRES',
+      notification_expires: {
+        product: {
+          name: 'Test Product',
+        },
+        is_expired: true,
+        is_out: false,
+        days_since_last_purchase: 3,
+      },
+    },
+    updateMany: [
+      {
+        id: '8aaa1cb2-38ee-4100-a56c-789c9e5ffe48',
+        is_read: true,
+      },
+    ],
   },
 };

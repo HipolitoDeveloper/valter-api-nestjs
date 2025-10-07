@@ -311,7 +311,7 @@ const createActionsFromProductResource = async (prisma: PrismaClient) => {
 const createActionsFromNotificationResource = async (prisma: PrismaClient) => {
   const generateUuid = uuidv4 as () => string;
 
-  const productResource = await prisma.resources.findFirstOrThrow({
+  const notificationResource = await prisma.resources.findFirstOrThrow({
     select: {
       id: true,
     },
@@ -323,15 +323,30 @@ const createActionsFromNotificationResource = async (prisma: PrismaClient) => {
   await prisma.action.upsert({
     where: {
       name_resource_id: {
-        resource_id: productResource?.id,
+        resource_id: notificationResource?.id,
         name: ACTIONS.FIND_ALL,
       },
     },
     update: {},
     create: {
       id: generateUuid(),
-      resource_id: productResource?.id,
+      resource_id: notificationResource?.id,
       name: ACTIONS.FIND_ALL,
+    },
+  });
+
+  await prisma.action.upsert({
+    where: {
+      name_resource_id: {
+        resource_id: notificationResource?.id,
+        name: ACTIONS.UPDATE,
+      },
+    },
+    update: {},
+    create: {
+      id: generateUuid(),
+      resource_id: notificationResource?.id,
+      name: ACTIONS.UPDATE,
     },
   });
 };

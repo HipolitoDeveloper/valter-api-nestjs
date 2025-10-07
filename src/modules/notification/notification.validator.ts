@@ -9,4 +9,22 @@ export const notificationValidator = {
       .number({ invalid_type_error: 'limit must be a number' })
       .min(0, { message: 'limit must be ≥0' }),
   }),
+
+  updateNotificationDetails: z
+    .object({
+      id: z.string().uuid(),
+      isExpired: z.boolean().optional(),
+      isOut: z.boolean().optional(),
+    })
+    .refine(
+      (data) => data.isExpired !== undefined || data.isOut !== undefined,
+      {
+        message: 'At least one field (isExpired or isOut) must be provided',
+      },
+    ),
+
+  handleRead: z.object({
+    ids: z.array(z.string().uuid()).min(1, 'at least one id is required'),
+    isRead: z.boolean(),
+  }),
 };

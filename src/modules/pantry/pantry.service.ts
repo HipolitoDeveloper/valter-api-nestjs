@@ -94,7 +94,12 @@ export class PantryService {
     );
 
     const removedItems = [
-      ...items.filter((item) => item.state === ITEM_STATE.REMOVED),
+      ...items.filter(
+        (item) =>
+          item.state === ITEM_STATE.REMOVED ||
+          item.state === ITEM_STATE.EXPIRED ||
+          item.state === ITEM_STATE.OUT,
+      ),
       ...inCartItems,
     ].map((item) => item.id);
 
