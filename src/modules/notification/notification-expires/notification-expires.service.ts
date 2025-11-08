@@ -43,12 +43,12 @@ export class NotificationExpiresService {
     const formattedNotification = expiresPredictions
       .filter(
         (notificationExpires) =>
-          notificationExpires.probabilityOutOrExpired > 0.5 &&
+          notificationExpires.probabilityOutOrExpired > 0.1 &&
           (differenceInDays(
             notificationExpires.lastNotificationAt,
             new Date(),
           ) > 1 ||
-            notificationExpires.lastNotificationAt === 'None'),
+            notificationExpires.lastNotificationAt === 'NaT'),
       )
       .map((notificationExpires) => ({
         userId: notificationExpires.userId,
