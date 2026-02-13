@@ -10,17 +10,22 @@ import { UserModule } from './modules/user/user.module';
 import { PantryModule } from './modules/pantry/pantry.module';
 import { NotificationModule } from './modules/notification/notification.module';
 
+const baseImports = [
+  UserModule,
+  AuthModule,
+  PantryModule,
+  ShoplistModule,
+  ProductModule,
+  NotificationModule,
+  NotificationExpiresModule,
+];
+
+const imports = process.env.IS_LAMBDA
+  ? baseImports
+  : [...baseImports, JobsModule];
+
 @Module({
-  imports: [
-    UserModule,
-    AuthModule,
-    PantryModule,
-    ShoplistModule,
-    ProductModule,
-    NotificationModule,
-    NotificationExpiresModule,
-    JobsModule,
-  ],
+  imports,
   controllers: [AppController],
   providers: [AppService],
 })

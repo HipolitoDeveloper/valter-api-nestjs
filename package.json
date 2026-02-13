@@ -23,7 +23,7 @@
     "seed": "ts-node prisma/seeds/seed.ts",
     "init:container": "cd ./ci-cd && docker-compose up -d ",
     "postinstall": "prisma generate",
-    "deploy:prod": "vercel --prod"
+    "deploy": "serverless deploy --stage prod"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.2.2",
@@ -50,7 +50,6 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "serverless-http": "^3.2.0",
     "uuid": "^11.1.0",
     "zod": "^3.22.4"
   },
@@ -62,6 +61,7 @@
     "@nestjs/testing": "^11.0.1",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",
+    "@types/aws-lambda": "^8.10.160",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
