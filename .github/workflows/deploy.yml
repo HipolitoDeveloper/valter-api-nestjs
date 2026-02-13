@@ -12,6 +12,7 @@ jobs:
   test-build-deploy:
     name: Test, Build & Deploy
     runs-on: ubuntu-latest
+    environment: production
     timeout-minutes: 15
 
     steps:
