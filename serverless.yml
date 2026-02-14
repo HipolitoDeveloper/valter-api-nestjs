@@ -16,6 +16,7 @@ provider:
     DIRECT_URL: ${env:DIRECT_URL}
     JWT_SECRET: ${env:JWT_SECRET}
     JWT_REFRESH_SECRET: ${env:JWT_REFRESH_SECRET}
+    EXPIRES_API_SERVICE_URL: ${env:EXPIRES_API_SERVICE_URL}
 
 package:
   patterns:
@@ -51,3 +52,12 @@ functions:
     handler: dist/src/lambda.handler
     events:
       - httpApi: '*'
+
+  notifyExpires:
+    handler: dist/src/lambda.cronHandler
+    memorySize: 256
+    timeout: 60
+    events:
+      - schedule:
+          rate: rate(1 minute)
+          enabled: true

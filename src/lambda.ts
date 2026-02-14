@@ -10,18 +10,21 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { ZodExceptionFilter } from './common/filters/zod-exception.filter';
 import { NotFoundExceptionFilter } from './common/filters/notfound-exception.filter';
+import { NotificationExpiresService } from './modules/notification/notification-expires/notification-expires.service';
 import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
   Context,
+  ScheduledEvent,
 } from 'aws-lambda';
 
 const fastifyInstance = fastify();
 
+let app: NestFastifyApplication;
 let bootstrapPromise: Promise<void> | null = null;
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestFastifyApplication>(
+  app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(fastifyInstance as any),
     { logger: ['error', 'warn'] },
@@ -83,4 +86,19 @@ export async function handler(
       : Buffer.from(response.rawPayload).toString('base64'),
     isBase64Encoded: !isTextual,
   };
+}
+
+export async function cronHandler(
+  event: ScheduledEvent,
+  context: Context,
+): Promise<void> {
+  if (!bootstrapPromise) {
+    bootstrapPromise = bootstrap();
+  }
+  await bootstrapPromise;
+
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  const service = app.get(NotificationExpiresService);
+  await service.callNotificationsExpires();
 }

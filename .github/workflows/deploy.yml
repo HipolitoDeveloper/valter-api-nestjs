@@ -51,3 +51,4 @@ jobs:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+          EXPIRES_API_SERVICE_URL: ${{ secrets.EXPIRES_API_SERVICE_URL }}
