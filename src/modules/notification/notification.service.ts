@@ -96,23 +96,27 @@ export class NotificationService {
         );
 
         if (data.isOut || data.isExpired) {
-          const itemState = data.isOut ? ITEM_STATE.OUT : ITEM_STATE.EXPIRED;
+          const pantryItems =
+            notification.notification_expires.product.pantry_items;
 
-          await this.pantryService.update(
-            {
-              items: [
-                {
-                  productId: notification.notification_expires.product.id,
-                  id: notification.notification_expires.product.pantry_items[0]
-                    .id,
-                  state: itemState,
-                },
-              ],
-            },
-            pantryId,
-            prisma,
-            userId,
-          );
+          if (pantryItems.length > 0) {
+            const itemState = data.isOut ? ITEM_STATE.OUT : ITEM_STATE.EXPIRED;
+
+            await this.pantryService.update(
+              {
+                items: [
+                  {
+                    productId: notification.notification_expires.product.id,
+                    id: pantryItems[0].id,
+                    state: itemState,
+                  },
+                ],
+              },
+              pantryId,
+              prisma,
+              userId,
+            );
+          }
         }
       });
     } catch (error) {

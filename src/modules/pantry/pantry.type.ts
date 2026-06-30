@@ -84,6 +84,7 @@ export namespace PantryServiceNamespace {
       portionType: string;
       validForDays?: number;
       productId: string;
+      state: ItemState;
     }[];
   };
 
